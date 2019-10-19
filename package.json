@@ -11,14 +11,32 @@
     "turndown": "^5.0.3"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.18",
     "@types/jsdom": "^12.2.4",
     "@types/lodash": "^4.14.137",
     "@types/node": "^12.6.9",
     "@types/turndown": "^5.0.0",
+    "jest": "^24.9.0",
+    "jest-extended": "^0.11.2",
+    "ts-jest": "^24.1.0",
     "typescript": "^3.6.2"
   },
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc -b"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "testRegex": "/__tests__/.*\\.(tests?|specs?)\\.(ts|tsx|js)$",
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ]
   }
 }

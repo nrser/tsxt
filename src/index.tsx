@@ -1,16 +1,23 @@
-/* @jsx createElement */
+// Imports
+// ===========================================================================
 
 import { JSDOM } from 'jsdom';
 import { is as jsdomIsNode } from 'jsdom/lib/jsdom/living/generated/node';
 import _ from 'lodash/fp';
 import TurndownService from 'turndown';
 
-const document = (new JSDOM(``)).window.document;
+
+// Definitions
+// ===========================================================================
+
+const document = (new JSDOM( `` )).window.document;
 const turndown = new TurndownService();
+
 
 function isNode( value: any ): value is Node {
   return jsdomIsNode( value );
 }
+
 
 function toElement( value: any ): Node {
   if (isNode( value )) {
@@ -21,6 +28,7 @@ function toElement( value: any ): Node {
     return document.createTextNode( value.toString() );
   }
 }
+
 
 function createElement(
   type: 'tsxt',
@@ -51,24 +59,13 @@ function createElement( type, props, ...children ) {
   } else {
     return element;
   }
+} // createElement()
+
+
+// Exports
+// ===========================================================================
+
+export {
+  createElement,
 }
 
-
-function matcherHint( s: string ): string {
-  return s;
-}
-
-function printReceived( v: any ): string {
-  return v.toString();
-}
-
-
-export function test( received = 'Received!' ) {
-  return <tsxt>
-    { matcherHint( 'toHaveOptions' ) }<br/>
-    <br/>
-    <br/>
-    Received: { printReceived( received ) }<br/>
-    <br/>
-  </tsxt>;
-}
