@@ -23,7 +23,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "test": "jest",
+    "prepublish": "rm -rf ./dist && tsc && jest"
   },
   "jest": {
     "moduleFileExtensions": [

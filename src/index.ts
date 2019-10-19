@@ -2,7 +2,6 @@
 // ===========================================================================
 
 import { JSDOM } from 'jsdom';
-// import { is as jsdomIsNode } from 'jsdom/lib/jsdom/living/generated/node';
 import _ from 'lodash/fp';
 import TurndownService from 'TURNDOWN';
 
@@ -10,10 +9,9 @@ import TurndownService from 'TURNDOWN';
 // Types
 // ---------------------------------------------------------------------------
 
-export type Attrs = null | Record<string, any>;
-
-export type ElementCreator = (attrs: Attrs, ...children: Node[]) => Node
-export type Type = string | ElementCreator;
+export type Attrs           = null | Record<string, any>;
+export type ElementCreator  = (attrs: Attrs, ...children: Node[]) => Node;
+export type Type            = string | ElementCreator;
 
 
 // Definitions

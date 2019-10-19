@@ -1,0 +1,23 @@
+# Omit development stuff
+/dev
+
+# omit the docs - they're too big and heavy
+/doc
+
+# omit tests - pull the source if you want to run them
+/__tests__
+
+# obviously don't need temp files
+/tmp
+
+# TypeScript
+/tsconfig.json
+
+# git
+.git*
+
+# yarn
+/yarn.lock
+
+# Node version
+/.node-version
