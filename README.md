@@ -1,4 +1,4 @@
-TSXT - Structured Documents In TSX
+Tsxt - Structured Documents In TSX
 ==============================================================================
 
 Construct, compose and render structured documents in-source using [TSX][]
@@ -6,7 +6,7 @@ Construct, compose and render structured documents in-source using [TSX][]
 
 Basically
 
-    React : HTML as TSXT : Text
+    React : HTML as Tsxt : Text
 
 If you really like how [JSX][] and [React][] let you structure your HTML in 
 code then maybe check it out.
@@ -26,11 +26,11 @@ What The Hell?
 ------------------------------------------------------------------------------
 
 ```TSX
-/* @jsx TSXT */
+/* @jsx Tsxt */
 
-import TSXT from 'tsxt';
+import Tsxt from 'tsxt';
 
-let markdown = <tsxt>
+let markdown = <Tsxt>
   <h1>Let's Start Here</h1>
   
   <p>
@@ -41,7 +41,7 @@ let markdown = <tsxt>
     <li>Weak ollies</li>
     <li>Lighter theft</li>
   </ol>
-</tsxt>;
+</Tsxt>;
 ```
 
 The `markdown` variable will contain the rendered [Markdown][] string
@@ -111,12 +111,12 @@ Two things:
 
     If you're a console-crushing, regex-ripping, string-a-ling-everything,
     byte-stream-loving developer then more power to ya. I'm a little jealous
-    actually. But it wouldn't surprise me if the TSXT approach doesn't really
+    actually. But it wouldn't surprise me if the Tsxt approach doesn't really
     make much sense to you. And that's fine by me. If you still gotta write me a 
     comment/message to that extent, do what you gotta.
 
     However, if you're more like me and think much better in shapes and
-    relationships, then take TSXT for a spin.
+    relationships, then take Tsxt for a spin.
 
 I really like what [JSX][] and [React][] brought to the scene. They're exactly
 what I always wanted: write my HTML in code without it feeling like hell. It
@@ -126,7 +126,7 @@ documents I'm generating.
 The HTML-y syntax is not great, but it's a damn sight better in my opinion than
 what you'd end up with even in a language as flexible as Ruby. We basically all
 understand HTML... I'm willing to bet most programers could get a grasp on 
-the idea of a TSXT block just by seeing it, which is a pretty awesome feature.
+the idea of a Tsxt block just by seeing it, which is a pretty awesome feature.
 
 
 ------------------------------------------------------------------------------
@@ -154,20 +154,20 @@ your project's [tsconfig.json][].
 
 ### `.tsx` Files ###
 
-In *every* `.tsx` file in which you want to use TSXT you need to:
+In *every* `.tsx` file in which you want to use Tsxt you need to:
 
 1.  Add a magic comment line at the top that says exactly:
     
     ```TSX
-    /* @jsx TSXT */
+    /* @jsx Tsxt */
     ```
     
     In my experience you **must** use a `/* ... */` comment.
     
     The `// ...` form does not seem to work.
 
-2.  Import `TSXT()` so that the function will be in scope:
+2.  Import `Tsxt()` so that the function will be in scope:
     
     ```TSX
-    import TSXT from 'tsxt';
+    import Tsxt from 'tsxt';
     ```
