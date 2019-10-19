@@ -1,0 +1,24 @@
+{
+  "name": "@stepfuncs/ex-ts-tstxt",
+  "version": "0.1.0",
+  "description": "Use TSX to write text?",
+  "main": "dist/index.js",
+  "author": "NRSER",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@types/lodash": "^4.14.137",
+    "lodash": "^4.17.15",
+    "turndown": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^12.2.4",
+    "@types/node": "^12.6.9",
+    "@types/turndown": "^5.0.0",
+    "typescript": "^3.6.2"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "tsc -b"
+  }
+}
