@@ -1,43 +1,12 @@
-/* @jsx TSXT */
+/* @jsx Tsxt */
 
 import 'jest';
 import 'jest-extended';
 import _ from 'lodash/fp';
 
-import { joinLines } from './test_helpers';
+import { joinLines } from '../test_helpers';
 
-import TSXT, { Attrs } from '../src/index';
-
-
-describe( `most basic tests`, () => {
-  it( `renders an example`, () => {
-    const md = <tsxt>
-      <h1>Let's Start Here</h1>
-      
-      <p>
-        There's a few global problems I'd like to talk about today...
-      </p>
-      
-      <ol>
-        <li>Weak ollies</li>
-        <li>Lighter theft</li>
-      </ol>
-    </tsxt>;
-    
-    expect( md ).toEqual(
-      joinLines(
-        `Let's Start Here`,
-        `================`,
-        ``,
-        `There's a few global problems I'd like to talk about today...`,
-        ``,
-        `1.  Weak ollies`,
-        `2.  Lighter theft`,
-      )
-    );
-    
-  });
-}); // describe most basic tests
+import Tsxt, { Attrs } from '../../src/index';
 
 
 describe( `Custom elements`, () => {
@@ -60,7 +29,7 @@ describe( `Custom elements`, () => {
           return node;
         }
         
-        return TSXT(
+        return Tsxt(
           'div',
           attrs,
           <p>{ style( `I injected this first.` ) }</p>,
@@ -69,13 +38,13 @@ describe( `Custom elements`, () => {
         );
       };
     
-    const md_em = <tsxt>
+    const md_em = <Tsxt>
       <Bookend em={ true }>
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
       </Bookend>
-    </tsxt>;
+    </Tsxt>;
     
     expect( md_em ).toEqual(
       joinLines(
@@ -91,13 +60,13 @@ describe( `Custom elements`, () => {
       )
     );
     
-    const md_no_em = <tsxt>
+    const md_no_em = <Tsxt>
       <Bookend>
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
       </Bookend>
-    </tsxt>;
+    </Tsxt>;
     
     expect( md_no_em ).toEqual(
       joinLines(

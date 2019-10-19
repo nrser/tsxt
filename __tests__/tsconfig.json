@@ -11,7 +11,10 @@
 //    
 {
   "extends": "../tsconfig.json",
-  "include": [ "./**/*", "../include/**/*.d.ts" ],
+  "include": [
+    "../include/**/*.d.ts",
+    "./**/*.(ts|tsx)"
+  ],
   "baseUrl": "..",
   "compilerOptions": {
     "jsx": "react"

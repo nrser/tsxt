@@ -66,6 +66,6 @@
   
   "include": [
     "./include/**/*.d.ts",
-    "./src/**/*"
+    "./src/**/*.(ts|tsx)"
   ]
 }
