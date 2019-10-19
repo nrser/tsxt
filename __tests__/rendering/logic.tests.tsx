@@ -4,10 +4,9 @@ import 'jest';
 import 'jest-extended';
 import _ from 'lodash/fp';
 
-import { joinLines } from '../test_helpers';
+import '../test_helpers';
 
-// import Tsxt, { Attrs } from '../../src/index';
-import Tsxt, { Attrs } from '../..';
+import Tsxt from '../..';
 
 
 describe( `Test logic out - conditionals, loops, etc...` , () => {
@@ -29,21 +28,17 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
     };
     
     it( `maps the list when given props`, () => {
-      expect( getMessage({ prefix: 'a/x', separator: '/' }) ).toEqual(
-        joinLines(
-          `It has props!`,
-          ``,
-          `*   prefix: a/x`,
-          `*   separator: /`,
-        )
+      expect( getMessage({ prefix: 'a/x', separator: '/' }) ).toEqualLines(
+        `It has props!`,
+        ``,
+        `*   prefix: a/x`,
+        `*   separator: /`,
       )
     });
     
     it( `omits the list when props are undefined`, () => {
-      expect( getMessage() ).toEqual(
-        joinLines(
-          `It has not props!`,
-        )
+      expect( getMessage() ).toEqualLines(
+        `It has not props!`,
       );
     });
   }); // describe making a list...

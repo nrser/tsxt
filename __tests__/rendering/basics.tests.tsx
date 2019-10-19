@@ -4,9 +4,9 @@ import 'jest';
 import 'jest-extended';
 import _ from 'lodash/fp';
 
-import { joinLines } from '../test_helpers';
+import '../test_helpers';
 
-import Tsxt, { Attrs } from '../..';
+import Tsxt from '../..';
 
 
 describe( `most basic tests`, () => {
@@ -24,8 +24,7 @@ describe( `most basic tests`, () => {
       </ol>
     </Tsxt>;
     
-    expect( md ).toEqual(
-      joinLines(
+    expect( md ).toEqualLines(
         `Let's Start Here`,
         `================`,
         ``,
@@ -33,8 +32,6 @@ describe( `most basic tests`, () => {
         ``,
         `1.  Weak ollies`,
         `2.  Lighter theft`,
-      )
     );
-    
   });
 }); // describe most basic tests

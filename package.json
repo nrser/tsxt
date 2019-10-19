@@ -2,15 +2,17 @@
   "name": "tsxt",
   "version": "0.1.0",
   "description": "Use TSX to write text?",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "author": "NRSER",
   "license": "BSD-2-Clause",
   "private": false,
   "dependencies": {
+    "invariant": "^2.2.4",
     "lodash": "^4.17.15",
     "turndown": "^5.0.3"
   },
   "devDependencies": {
+    "@types/invariant": "^2.2.30",
     "@types/jest": "^24.0.18",
     "@types/jsdom": "^12.2.4",
     "@types/lodash": "^4.14.137",

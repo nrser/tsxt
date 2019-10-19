@@ -4,9 +4,9 @@ import 'jest';
 import 'jest-extended';
 import _ from 'lodash/fp';
 
-import { joinLines } from '../test_helpers';
+import '../test_helpers';
 
-import Tsxt, { Attrs } from '../..';
+import Tsxt, { Props } from '../..';
 
 
 describe( `Custom elements`, () => {
@@ -20,7 +20,7 @@ describe( `Custom elements`, () => {
      * @param children 
      */
     const Bookend =
-      (attrs: Attrs, ...children: Node[] ): Node => {
+      (attrs: Props, ...children: Node[] ): Node => {
         const style = ( text: string ) => {
           let node = text;
           
@@ -46,18 +46,16 @@ describe( `Custom elements`, () => {
       </Bookend>
     </Tsxt>;
     
-    expect( md_em ).toEqual(
-      joinLines(
-        `_I injected this first._`,
-        ``,
-        `Here are the actual children...`,
-        ``,
-        `...and here...`,
-        ``,
-        `...and finally here.`,
-        ``,
-        `_I injected this last._`,
-      )
+    expect( md_em ).toEqualLines(
+      `_I injected this first._`,
+      ``,
+      `Here are the actual children...`,
+      ``,
+      `...and here...`,
+      ``,
+      `...and finally here.`,
+      ``,
+      `_I injected this last._`,
     );
     
     const md_no_em = <Tsxt>
@@ -68,18 +66,16 @@ describe( `Custom elements`, () => {
       </Bookend>
     </Tsxt>;
     
-    expect( md_no_em ).toEqual(
-      joinLines(
-        `I injected this first.`,
-        ``,
-        `Here are the actual children...`,
-        ``,
-        `...and here...`,
-        ``,
-        `...and finally here.`,
-        ``,
-        `I injected this last.`,
-      )
+    expect( md_no_em ).toEqualLines(
+      `I injected this first.`,
+      ``,
+      `Here are the actual children...`,
+      ``,
+      `...and here...`,
+      ``,
+      `...and finally here.`,
+      ``,
+      `I injected this last.`,
     );
   });
 }); // describe Custom elements

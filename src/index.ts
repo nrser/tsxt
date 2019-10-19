@@ -3,17 +3,22 @@
 
 import { JSDOM } from 'jsdom';
 import _ from 'lodash/fp';
+import set from 'lodash/set';
 import TurndownService from 'TURNDOWN';
 import { type } from 'os';
 
 
+export type Nothing         = null | undefined;
+export type Props           = null | Record<string, any>;
+export type ElementCreator  = (props: Props, ...children: Node[]) => Node;
+export type Type            = string | ElementCreator;
+
+
+// Definitions
+// ===========================================================================
+
 // Types
 // ---------------------------------------------------------------------------
-
-export type Nothing             = null | undefined;
-export type Attrs           = null | Record<string, any>;
-export type ElementCreator  = (attrs: Attrs, ...children: Node[]) => Node;
-export type Type            = string | ElementCreator;
 
 /**
  * How we know that [[Tsxt]] is itself (receiving itself triggers the rendering
@@ -28,13 +33,13 @@ export interface ITsxt extends IsTsxt {
    * The render form - when passed *itself* the [[Tsxt]] function renders the
    * elements and returns a string.
    */
-  ( type: IsTsxt, attrs: Attrs, ...children: any[] ): string;
+  ( type: IsTsxt, props: Props, ...children: any[] ): string;
   
   /**
    * The common form - creates [[HTMLElement]] nodes by proxying to
    * [[createElement]].
    */
-  ( type: Type, attrs: Attrs, ...children: any[] ): HTMLElement;
+  ( type: Type, props: Props, ...children: any[] ): HTMLElement;
   
   /**
    * The IDFK form :/
@@ -43,17 +48,10 @@ export interface ITsxt extends IsTsxt {
    *       
    *        Maybe has something to do with the intrinsic JSX types?
    */
-  ( type: any, attrs: Attrs, ...children: any[] ): never;
+  ( type: any, props: Props, ...children: any[] ): never;
   
-  // guard<TValue=any, TReturn=any>(
-  //   value: TValue,
-  //   fn: (value: TValue) => TReturn
-  // ): null | TReturn;
-  
-}
+} // interface ITsxt
 
-// Definitions
-// ===========================================================================
 
 // Constants
 // ---------------------------------------------------------------------------
@@ -99,7 +97,10 @@ function toElement( value: any ): Node {
     // console.log( `toElement() - toString() fallthrough!` );
     // console.log({ value, isNode: isNode( value ) });
     
-    return DOCUMENT.createTextNode( value.toString() );
+    const node = DOCUMENT.createTextNode( value.toString() );
+    set( node, Symbol.for( 'TsxtValue' ), value );
+    
+    return node;
   }
 }
 
@@ -121,15 +122,15 @@ function toElements( values: any[] ): Node[] {
 
 function createElement(
   type: string,
-  attrs: Attrs,
+  props: Props,
   ...children: any[]
 ): HTMLElement {
   const element = DOCUMENT.createElement( type );
   
-  if (_.isObject( attrs )) {
+  if (_.isObject( props )) {
     _.each(
       ([name, value]) => element.setAttribute( name, value ),
-      _.toPairs( attrs ),
+      _.toPairs( props ),
     );
   }
   
@@ -152,33 +153,21 @@ function isElementCreator( value: any ): value is ElementCreator {
 }
 
 
-// function guard<TValue=any, TReturn=any>(
-//   value: Nothing | TValue,
-//   fn: (value: TValue) => TReturn,
-// ): null | TReturn {
-//   if (isNothing( value )) {
-//     return null
-//   } else {
-//     return fn( value );
-//   }
-// }
-
-
 const Tsxt =
   Object.assign(
-    ( type: any, attrs: Attrs, ...children: any[] ) => {
-      // console.log({ type, attrs, children });
+    ( type: any, props: Props, ...children: any[] ) => {
+      // console.log({ type, props, children });
       
       if (_.isString( type )) {
-        return createElement( type, attrs, ...children );
+        return createElement( type, props, ...children );
         
       } else if (isTsxt( type )) {
         return TURNDOWN_SERVICE.turndown(
-          createElement( 'div', attrs, ...children )
+          createElement( 'div', props, ...children )
         );
         
       } else if (isElementCreator( type )) {
-        return type( attrs, ...toElements( children ) );
+        return type( props, ...toElements( children ) );
         
       } else {
         throw new Error( `Not sure what this 'type' is: ${ type }` );
@@ -186,7 +175,6 @@ const Tsxt =
     },
     {
       IS_TSXT: true,
-      // guard
     },
   ) as ITsxt;
 
@@ -196,6 +184,8 @@ const Tsxt =
 
 export {
   isNode,
+  toElement,
+  toElements,
   createElement,
   Tsxt,
 }
