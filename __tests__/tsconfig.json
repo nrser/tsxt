@@ -13,7 +13,8 @@
   "extends": "../tsconfig.json",
   "include": [
     "../include/**/*.d.ts",
-    "./**/*.(ts|tsx)"
+    "./**/*.ts",
+    "./**/*.tsx"
   ],
   "baseUrl": "..",
   "compilerOptions": {

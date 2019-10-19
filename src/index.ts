@@ -10,23 +10,46 @@ import { type } from 'os';
 // Types
 // ---------------------------------------------------------------------------
 
+export type Nothing             = null | undefined;
 export type Attrs           = null | Record<string, any>;
 export type ElementCreator  = (attrs: Attrs, ...children: Node[]) => Node;
 export type Type            = string | ElementCreator;
 
+/**
+ * How we know that [[Tsxt]] is itself (receiving itself triggers the rendering
+ * overload).
+ */
 export interface IsTsxt {
   IS_TSXT: true;
 }
 
 export interface ITsxt extends IsTsxt {
+  /**
+   * The render form - when passed *itself* the [[Tsxt]] function renders the
+   * elements and returns a string.
+   */
   ( type: IsTsxt, attrs: Attrs, ...children: any[] ): string;
+  
+  /**
+   * The common form - creates [[HTMLElement]] nodes by proxying to
+   * [[createElement]].
+   */
   ( type: Type, attrs: Attrs, ...children: any[] ): HTMLElement;
   
-  // FIXME  It *needs* this to type check `<Tsxt>...</Tsxt>`
-  //        
-  //        Maybe has something to do with the intrinsic JSX types?
-  //        
-  ( type: any, attrs: Attrs, ...children: any[] ): never; 
+  /**
+   * The IDFK form :/
+   * 
+   * FIXME  It *needs* this to type check `<Tsxt>...</Tsxt>`
+   *       
+   *        Maybe has something to do with the intrinsic JSX types?
+   */
+  ( type: any, attrs: Attrs, ...children: any[] ): never;
+  
+  // guard<TValue=any, TReturn=any>(
+  //   value: TValue,
+  //   fn: (value: TValue) => TReturn
+  // ): null | TReturn;
+  
 }
 
 // Definitions
@@ -53,6 +76,10 @@ const TURNDOWN_SERVICE: TurndownService =
 
 // Functions
 // ---------------------------------------------------------------------------
+
+function isNothing( value: any ): value is Nothing {
+  return _.isNull( value ) || _.isUndefined( value );
+}
 
 function isNode( value: any ): value is Node {
   // TODO   Janky...?
@@ -125,6 +152,18 @@ function isElementCreator( value: any ): value is ElementCreator {
 }
 
 
+// function guard<TValue=any, TReturn=any>(
+//   value: Nothing | TValue,
+//   fn: (value: TValue) => TReturn,
+// ): null | TReturn {
+//   if (isNothing( value )) {
+//     return null
+//   } else {
+//     return fn( value );
+//   }
+// }
+
+
 const Tsxt =
   Object.assign(
     ( type: any, attrs: Attrs, ...children: any[] ) => {
@@ -145,7 +184,10 @@ const Tsxt =
         throw new Error( `Not sure what this 'type' is: ${ type }` );
       }
     },
-    { IS_TSXT: true },
+    {
+      IS_TSXT: true,
+      // guard
+    },
   ) as ITsxt;
 
 
@@ -154,7 +196,6 @@ const Tsxt =
 
 export {
   isNode,
-  toElement,
   createElement,
   Tsxt,
 }

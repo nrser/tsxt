@@ -6,13 +6,13 @@ import _ from 'lodash/fp';
 
 import { joinLines } from '../test_helpers';
 
-import Tsxt, { Attrs } from '../../src/index';
+// import Tsxt, { Attrs } from '../../src/index';
+import Tsxt, { Attrs } from '../..';
 
 
 describe( `Test logic out - conditionals, loops, etc...` , () => {
   
   describe( `making a list and checking it twice`, () => {
-    const props = { prefix: 'a/x', separator: '/' };
     
     function getMessage( props?: Record<string, any> ) {
       return <Tsxt>
@@ -20,12 +20,8 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
         {
           props
           ? <ul>
-              {
-                _.map(
-                  ([k, v]) => <li>{ k }: { v }</li>,
-                  _.toPairs( props )
-                )
-              }
+              { _.map( ([k, v]) => <li>{ k }: { v }</li>,
+                        _.toPairs( props ) ) }
             </ul>
           : null
         }
@@ -51,5 +47,40 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
       );
     });
   }); // describe making a list...
+  
+  
+  // bu yao :/
+  // describe( `making a list and doing it with helpers`, () => {
+    
+  //   function getMessage( props?: Record<string, any> ) {
+  //     return <Tsxt>
+  //       <p>It { props ? 'has' : 'has not' } props!</p>
+  //       { Tsxt.guard(
+  //           props,
+  //           _.pipe( _.toPairs,
+  //                   _.map( ([k, v]) => <li>{ k }: { v }</li> ) ),
+  //       ) }
+  //     </Tsxt>
+  //   };
+    
+  //   it( `maps the list when given props`, () => {
+  //     expect( getMessage({ prefix: 'a/x', separator: '/' }) ).toEqual(
+  //       joinLines(
+  //         `It has props!`,
+  //         ``,
+  //         `*   prefix: a/x`,
+  //         `*   separator: /`,
+  //       )
+  //     )
+  //   });
+    
+  //   it( `omits the list when props are undefined`, () => {
+  //     expect( getMessage() ).toEqual(
+  //       joinLines(
+  //         `It has not props!`,
+  //       )
+  //     );
+  //   });
+  // }); // describe making a list with help...
   
 }); // describe Test logic out - conditionals, loops, etc...

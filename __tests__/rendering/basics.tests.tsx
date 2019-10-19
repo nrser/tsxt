@@ -6,7 +6,7 @@ import _ from 'lodash/fp';
 
 import { joinLines } from '../test_helpers';
 
-import Tsxt, { Attrs } from '../../src/index';
+import Tsxt, { Attrs } from '../..';
 
 
 describe( `most basic tests`, () => {
