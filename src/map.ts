@@ -9,10 +9,15 @@ import invariant from 'invariant';
 // ### Project / Package ###
 
 import {
+  Props,
+} from './types';
+
+import { Q } from './helpers';
+
+import {
   toElement,
   createElement,
-  Props
-} from './index';
+} from './dom';
 
 
 // Definitions
@@ -45,14 +50,14 @@ function transformNode( k: any, v: any, node: Node ): Node {
 
 function Map( props: Props, ...children: Node[] ): null | HTMLElement {
   if (props === null) {
-    invariant( true, `Tsxt.map requires an \`object\` attribute` );
+    invariant( false, Q`Tsxt.map requires an ${`object`} attribute` );
     return null;
   }
   
   const object = props.object;
   
   if (!_.isObject( object )) {
-    invariant( true,  `Tsxt.map[object] must be in Object, got ${ object }` );
+    invariant( false, Q`Tsxt.map[object] must be in Object, got ${ object }` );
     return null;
   }
   
@@ -67,7 +72,7 @@ function Map( props: Props, ...children: Node[] ): null | HTMLElement {
       _.flatten,
     )( object )
   )
-}
+} // Map()
 
 
 // Exports
