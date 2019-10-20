@@ -5,13 +5,6 @@ import { JSDOM } from 'jsdom';
 import _ from 'lodash/fp';
 import set from 'lodash/set';
 import TurndownService from 'TURNDOWN';
-import { type } from 'os';
-
-
-export type Nothing         = null | undefined;
-export type Props           = null | Record<string, any>;
-export type ElementCreator  = (props: Props, ...children: Node[]) => Node;
-export type Type            = string | ElementCreator;
 
 
 // Definitions
@@ -19,6 +12,15 @@ export type Type            = string | ElementCreator;
 
 // Types
 // ---------------------------------------------------------------------------
+
+export type Props =
+  null | Record<string, any>;
+  
+export type ElementCreator =
+  (props: Props, ...children: Node[]) => null | Node;
+  
+export type Type =
+  string | ElementCreator;
 
 /**
  * How we know that [[Tsxt]] is itself (receiving itself triggers the rendering
@@ -75,9 +77,7 @@ const TURNDOWN_SERVICE: TurndownService =
 // Functions
 // ---------------------------------------------------------------------------
 
-function isNothing( value: any ): value is Nothing {
-  return _.isNull( value ) || _.isUndefined( value );
-}
+// ### Type Guards ###
 
 function isNode( value: any ): value is Node {
   // TODO   Janky...?
@@ -87,6 +87,16 @@ function isNode( value: any ): value is Node {
   return _.isNumber( nodeType ) && nodeType >= 1 && nodeType <= 12;
 }
 
+function isElementCreator( value: any ): value is ElementCreator {
+  return _.isFunction( value );
+}
+
+function isTsxt( value: any ): value is IsTsxt  {
+  return _.get( 'IS_TSXT', value ) === true;
+}
+
+
+// ### Creating Elements (DOM Nodes) ###
 
 function toElement( value: any ): Node {
   if (isNode( value )) {
@@ -143,15 +153,7 @@ function createElement(
 } // createElement()
 
 
-function isTsxt( value: any ): value is IsTsxt  {
-  return _.get( 'IS_TSXT', value ) === true;
-}
-
-
-function isElementCreator( value: any ): value is ElementCreator {
-  return _.isFunction( value );
-}
-
+// ### The Main Interface ###
 
 const Tsxt =
   Object.assign(
@@ -184,6 +186,8 @@ const Tsxt =
 
 export {
   isNode,
+  isElementCreator,
+  isTsxt,
   toElement,
   toElements,
   createElement,
@@ -191,4 +195,3 @@ export {
 }
 
 export default Tsxt;
-

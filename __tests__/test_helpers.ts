@@ -6,26 +6,18 @@
  */
 /// <reference types="jest" />
  
-import 'jest';
-import 'jest-extended';
-import { MatcherState } from 'expect/build/types';
-import ExtendedMatchers from 'jest-extended/dist/matchers';
 import _ from 'lodash/fp';
+
+import 'jest';
 import Matchers from 'expect/build/matchers';
-import * as MUtils from 'jest-matcher-utils';
+
+import 'jest-extended';
+import ExtMatchers from 'jest-extended/dist/matchers';
+
+import * as JMU from 'jest-matcher-utils';
 
 
 export type ComposeFn = () => any;
-
-
- /**
-  * Join arguments with newlines (`"\n"`).
-  * 
-  * @param lines 
-  */
-export function joinLines( ...lines: string[] ): string {
-  return lines.join( "\n" );
-}
 
 
 export function isCustomMatcherResult(
@@ -76,15 +68,13 @@ export function composeMatchers(
 } // composeMatchers()
 
 
-export default composeMatchers;
-
 function toEqualLines(
   this: jest.MatcherUtils,
   received: any,
   ...lines: string[]
 ): jest.CustomMatcherResult {
   return composeMatchers(
-    () => ExtendedMatchers.toBeString.call( this, received ),
+    () => ExtMatchers.toBeString.call( this, received ),
     () => Matchers.toEqual.call( this, received, lines.join( "\n" ) ),
   );
 }
