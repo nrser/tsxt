@@ -53,6 +53,3 @@ export interface ITsxt extends IsTsxt {
   ( type: any, props: Props, ...children: any[] ): never;
   
 } // interface ITsxt
-
-
-

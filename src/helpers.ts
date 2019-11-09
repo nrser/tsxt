@@ -1,5 +1,5 @@
+import I8 from 'immutable';
 import _ from 'lodash/fp';
-import { objectExpression } from '@babel/types';
 
 export interface TemplateLiteralTag<TExpression=any> {
   (strings: TemplateStringsArray, ...expressions: TExpression[] ): string;
@@ -46,3 +46,28 @@ export function codeFormat( value: any ): string {
 
 
 export const Q = createSimpleTag( codeFormat );
+
+
+export function findFirstOf<TKey, TValue, TOf extends TValue>(
+  is: (v: any) => v is TOf,
+  collection: I8.Collection<TKey, TValue>,
+): TOf | undefined {
+  const found = collection.find( is );
+  
+  if (found !== undefined) {
+    return found as TOf;
+  }
+}
+
+
+export function findLastOf<TKey, TValue, TOf extends TValue>(
+  is: (v: any) => v is TOf,
+  collection: I8.Collection<TKey, TValue>,
+): TOf | undefined {
+  const found = collection.findLast( is );
+  
+  if (found !== undefined) {
+    return found as TOf;
+  }
+}
+
