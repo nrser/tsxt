@@ -6,12 +6,11 @@
 import I8 from 'immutable';
 import _ from 'lodash/fp';
 import TurndownService from 'turndown';
-import Node from 'turndown/'
 
 // ### Project / Package ###
 
 import { Element } from '../immutable/element';
-import { ElementTraverse } from '../immutable/traverse/element_traverse';
+import { Traverse } from '../immutable/traverse';
 
 
 // Definitions
@@ -33,7 +32,7 @@ export function getTurndownService(): TurndownService {
 
 
 export function render( root: Element ) {
-  const traverse = new ElementTraverse( root, I8.List<number>() );
+  const traverse = Traverse.for( root, I8.List<number>() );
   return getTurndownService().turndown( traverse as any );
 }
 

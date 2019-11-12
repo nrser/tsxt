@@ -5,11 +5,10 @@
 
 import I8 from 'immutable';
 import _ from 'lodash/fp';
-import print from 'print';
 
 // ### Project / Package ###
 
-import { Element } from '../element';
+import { Element } from './element';
 
 
 // Definitions
@@ -302,7 +301,7 @@ export class Traverse {
 
 path: ${ this.path }
 
-expandedPath: ${ print( Traverse.expandPath( this.path )  ) }
+expandedPath: ${ JSON.stringify( Traverse.expandPath( this.path ) ) }
 
 isElement: ${ this.isElement }
 

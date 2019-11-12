@@ -2,6 +2,7 @@
 // ===========================================================================
 
 import _ from 'lodash/fp';
+import { Element } from './immutable/element';
 
 
 // Definitions
@@ -10,7 +11,7 @@ import _ from 'lodash/fp';
 export type Props = null | Record<string, any>;
   
 export type ElementCreator =
-  (props: Props, ...children: Node[]) => null | Node;
+  (props: Props, ...children: any[]) => null | Element;
   
 export function isElementCreator( value: any ): value is ElementCreator {
   return _.isFunction( value );
@@ -38,10 +39,10 @@ export interface ITsxt extends IsTsxt {
   ( type: IsTsxt, props: Props, ...children: any[] ): string;
   
   /**
-   * The common form - creates [[HTMLElement]] nodes by proxying to
+   * The common form - creates [[Element]] nodes by proxying to
    * [[createElement]].
    */
-  ( type: Type, props: Props, ...children: any[] ): HTMLElement;
+  ( type: Type, props: Props, ...children: any[] ): Element;
   
   /**
    * The IDFK form :/
