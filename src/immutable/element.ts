@@ -44,7 +44,7 @@ export namespace Element {
     ...children: any[]
   ): Element {
     const childList = I8.List<any>( children );
-    const propMap = I8.Map<string, any>( props === null ? {} : props.toJS() );
+    const propMap = I8.Map<any>( props === null ? {} : props );
     const elementProps: ElementProps = propMap.set( 'children', childList );
     
     const element = ElementFactory({
