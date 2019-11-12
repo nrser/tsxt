@@ -1,81 +1,69 @@
-// // Imports
-// // ===========================================================================
+// Imports
+// ===========================================================================
 
-// // ### Deps ###
+// ### Deps ###
 
-// import _ from  'lodash/fp';
-// import invariant from 'invariant';
+import _ from  'lodash/fp';
+import invariant from 'invariant';
+import I8 from 'immutable';
 
-// // ### Project / Package ###
+// ### Project / Package ###
 
-// import {
-//   Props,
-// } from './types';
+import {
+  Props,
+} from './types';
 
-// import { Q } from './helpers';
+import { Q } from './helpers';
 
-// import {
-//   toElement,
-//   createElement,
-// } from './dom';
+import { Element } from './immutable/element';
 
 
-// // Definitions
-// // ===========================================================================
+// Definitions
+// ===========================================================================
 
-// function transformNode( k: any, v: any, node: Node ): Node {
-//   if (node.nodeType === node.TEXT_NODE) {
-//     const value = _.get( Symbol.for( 'TsxtValue' ), node );
-    
-//     if (_.isFunction( value )) {
-//       return toElement( value.call( null, k, v ) );
-//     } else {
-//       return node.cloneNode();
-//     }
-//   } else {   
-//     const newNode = node.cloneNode();
-    
-//     while( newNode.firstChild ) {
-//       newNode.removeChild( newNode.firstChild );
-//     }
-    
-//     node.childNodes.forEach( (oldNode) => {
-//       newNode.appendChild( transformNode( k, v, oldNode ) );
-//     });
-    
-//     return newNode;
-//   }
-// }  // transformNode()
+function transformNode( k: any, v: any, node: any ): any {
+  if (Element.is( node )) {
+    return node.updateIn(
+      [ 'props', 'children' ],
+      (children: I8.List<any>) =>
+        children.map( child => transformNode( k, v, child ) )
+    );
+  } else if (_.isFunction( node )) {
+    return node.call( undefined, k, v );
+  } else {
+    return node;
+  }
+}  // transformNode()
 
 
-// function Map( props: Props, ...children: Node[] ): null | Element {
-//   if (props === null) {
-//     invariant( false, Q`Tsxt.map requires an ${`object`} attribute` );
-//     return null;
-//   }
+function Map( props: Props, ...children: any[] ): null | Element {
+  if (props === null) {
+    invariant( false, Q`Tsxt.map requires an ${`object`} attribute` );
+    return null;
+  }
   
-//   const object = props.object;
+  const object = props.object;
   
-//   if (!_.isObject( object )) {
-//     invariant( false, Q`Tsxt.map[object] must be in Object, got ${ object }` );
-//     return null;
-//   }
+  if (!_.isObject( object )) {
+    invariant( false, Q`Tsxt.map[object] must be in Object, got ${ object }` );
+    return null;
+  }
   
-//   return createElement(
-//     'div',
-//     null,
-//     ..._.pipe(
-//       _.toPairs,
-//       _.map(( [k, v] ) =>
-//           _.map( child =>
-//             transformNode( k, v, child ), children ) ),
-//       _.flatten,
-//     )( object )
-//   )
-// } // Map()
+  return Element.create(
+    'div',
+    null,
+    ..._.pipe(
+      _.toPairs,
+      _.map(( [k, v] ) =>
+          _.map( child =>
+            transformNode( k, v, child ), children ) ),
+      _.flatten,
+    )( object )
+  )
+} // Map()
 
 
-// // Exports
-// // ===========================================================================
+// Exports
+// ===========================================================================
 
-// export default Map;
+export default Map;
