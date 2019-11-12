@@ -21,22 +21,22 @@ import { Element } from './element';
 // Definitions
 // ===========================================================================
 
-function transformNode( k: any, v: any, node: any ): any {
+function transformNode( key: string, value: any, node: any ): any {
   if (Element.is( node )) {
     return node.updateIn(
       [ 'props', 'children' ],
       (children: I8.List<any>) =>
-        children.map( child => transformNode( k, v, child ) )
+        children.map( child => transformNode( key, value, child ) )
     );
   } else if (_.isFunction( node )) {
-    return node.call( undefined, k, v );
+    return node.call( undefined, key, value );
   } else {
     return node;
   }
 }  // transformNode()
 
 
-function Map( props: Props, ...children: any[] ): null | Element {
+function Map( props: Props, ...children: any[] ): any {
   if (props === null) {
     invariant( false, Q`Tsxt.map requires an ${`object`} attribute` );
     return null;
@@ -49,17 +49,11 @@ function Map( props: Props, ...children: any[] ): null | Element {
     return null;
   }
   
-  return Element.create(
-    'div',
-    null,
-    ..._.pipe(
-      _.toPairs,
-      _.map(( [k, v] ) =>
-          _.map( child =>
-            transformNode( k, v, child ), children ) ),
-      _.flatten,
-    )( object )
-  )
+  return _.pipe(
+    _.toPairs,
+    _.map(( [key, value] ) =>
+      _.map( child => transformNode( key, value, child ), children ) ),
+  )( object );
 } // Map()
 
 

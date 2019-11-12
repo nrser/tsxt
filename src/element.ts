@@ -1,7 +1,7 @@
 import _ from 'lodash/fp';
 import I8 from 'immutable';
 
-import { Props as PropsObject } from './types';
+import { Props as JSXProps } from './types';
 
 export namespace Element {
   
@@ -49,11 +49,11 @@ export namespace Element {
   
   export function create(
     type: string,
-    props: PropsObject,
+    props: JSXProps,
     ...children: any[]
   ): Element {
     const childList = I8.List<any>(
-      _.flatten( children ).filter( c => c !== null )
+      _.flattenDeep( children ).filter( c => c !== null )
     );
     
     const propMap = I8.Map<any>( props === null ? {} : props );

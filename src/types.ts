@@ -9,15 +9,19 @@ import { Element } from './element';
 // ===========================================================================
 
 export type Props = null | Record<string, any>;
+
+/**
+ * Expected signature for functions found in the JSX tree, which are called
+ * to produce document nodes.
+ */
+export type CreatorFunction =
+  (props: Props, ...children: any[]) => any;
   
-export type ElementCreator =
-  (props: Props, ...children: any[]) => null | Element;
-  
-export function isElementCreator( value: any ): value is ElementCreator {
-  return _.isFunction( value );
+export function isCreatorFunction( value: any ): value is CreatorFunction {
+  return _.isFunction( value ) && value.length === 1;
 }
   
-export type Type = string | ElementCreator;
+export type Type = string | CreatorFunction;
 
 /**
  * How we know that [[Tsxt]] is itself (receiving itself triggers the rendering

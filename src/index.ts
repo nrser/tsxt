@@ -8,7 +8,7 @@ import _ from 'lodash/fp';
 
 import {
   Props,
-  isElementCreator,
+  isCreatorFunction,
   isTsxt,
   ITsxt,
 } from './types';
@@ -35,7 +35,7 @@ const Tsxt =
         const root = Element.create( 'div', props, ...children );
         return render( root );
         
-      } else if (isElementCreator( type )) {
+      } else if (isCreatorFunction( type )) {
         return type( props, ...children );
         
       } else {

@@ -31,9 +31,9 @@ describe( `Map helper`, () => {
     expect( md  ).toEqualLines(
         `Here's my list:`,
         ``,
-        `*   x => ex`,
-        `*   y => why?`,
-        `*   z => zee! zee! zee!`
+        `1.  x => ex`,
+        `2.  y => why?`,
+        `3.  z => zee! zee! zee!`
     );
     
   })  
