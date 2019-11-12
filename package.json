@@ -30,7 +30,7 @@
     "clean": "rm -rf ./lib",
     "build": "tsc",
     "test": "jest",
-    "all": "yarn run clean && yarn run build",
+    "all": "yarn run clean && yarn run build && yarn run test",
     "prepublish": "yarn run all"
   },
   "jest": {
