@@ -5,6 +5,9 @@ import { Props as PropsObject } from './types';
 
 export namespace Element {
   
+  // Types
+  // =========================================================================
+  
   export const TYPE_OF = Symbol.for( 'tsxt.element' );
   
   export type Children = I8.List<any>;
@@ -21,12 +24,20 @@ export namespace Element {
     props: Props;
   }
   
+  
+  // Classes (Well, I8.Record.Factory Really)
+  // =========================================================================
+  
   export const Factory =
     I8.Record<Interface>({
       $$typeof: TYPE_OF,
       type: '',
       props: I8.Map<any>({ children: I8.List<any>() }) as Props,
     }, 'Tsxt.Element' );
+  
+  
+  // Functions
+  // =========================================================================
   
   export function is( value: any ): value is Element {
     return _.get( '$$typeof', value ) === TYPE_OF;
