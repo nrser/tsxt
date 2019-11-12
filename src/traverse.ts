@@ -62,10 +62,10 @@ export class Traverse {
     return traverse;
   }
   
-  protected _root: Element;
-  protected _path: Path;
-  protected _value: any;
-  protected _isElement: boolean;
+  protected readonly _root: Element;
+  protected readonly _path: Path;
+  protected readonly _value: any;
+  protected readonly _isElement: boolean;
   
   constructor(
     root: Element,
@@ -244,7 +244,7 @@ export class Traverse {
   
   get textContent(): null | string {
     if (this.isElement) {
-      return Element.textContent( this.value as Element );
+      return Element.textContent( this.element );
     }
     return this.nodeValue;
   }
@@ -273,41 +273,24 @@ export class Traverse {
     return `${ this.value }`;
   }
   
-  set data( value: string ) {
-    // // Short if we're not doing anything useful
-    // if (value === this.value) { return }
-    
-    // console.log( `SETTING data to ${ value } on ${ this.nodeName } ${ this.value }` );    
-    
-    // if (this.isElement) {
-    //   throw new Error( `Can't set data on an Element` );
-    // }
-    
-    // const expandedPath = Traverse.expandPath( this.path );
-    
-    // this._root = this._root.setIn( expandedPath, value );
-    
-    // this._value = this._root.getIn( expandedPath );
-    
-    // if (this._value !== value) {
-    //   throw new Error( `FUCK NUTS\n\n${ this._value }\n\n${ value }`)
-    // }
-  } // #data=
+  /**
+   * Does *nothing*.
+   * 
+   * Turndown tries to set text node data during it's mandatory "collapse 
+   * whitespace" pre-processing, but mutation just opens a huge can of worms for
+   * us given we're caching [[Traverse]] instances by [[root]] and [[path]] to
+   * make the damn `===` work how it expects, and mutation swaps the [[root]]
+   * object.
+   * 
+   * I think that JSX does a decent job of cutting out whitespace on it's own,
+   * so not so concerned about collapsing it, and no-op'ing doesn't seem to 
+   * screw up the collapse routine's iteration (thus far), so seems viable.
+   */
+  set data( value: string ) { /* pass */ }
   
   toString(): string {
-    return (
-`${ this.constructor.name }<${ this.nodeName }>
-
-path: ${ this.path }
-
-expandedPath: ${ JSON.stringify( Traverse.expandPath( this.path ) ) }
-
-isElement: ${ this.isElement }
-
-value: ${ this.value }
-
-`
-    );
+    const blurb = _.truncate( {}, this.textContent ||  `''` );
+    return `<tsxt.Traverse:${ this.nodeName } ${ blurb }>`;
   } // #toString()
   
   
@@ -458,6 +441,8 @@ value: ${ this.value }
   // 
   
   /**
+   * Child traverses that wrap [[Element]] nodes.
+   * 
    * @note 
    *  The DOM method returns an `HTMLCollection` (of elements), which is *not*
    *  an Array, because that would be too language-specific. No, it uses a
