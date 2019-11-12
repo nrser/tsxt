@@ -2,6 +2,8 @@ import _ from 'lodash/fp';
 import I8 from 'immutable';
 
 import { Props } from '../types';
+import { isSomeOf } from '../helpers';
+import { isSome } from 'fp-ts/lib/Option';
 
 
 export const TSXT_ELEMENT_TYPE = Symbol.for( 'tsxt.element' );
@@ -54,12 +56,61 @@ export namespace Element {
     });
   }
   
-  export function textContent( element: Element ): string {
-    return children( element ).reduce(
-      (reduction, child, _index) =>
-        reduction + (is( child ) ? textContent( child ) : child.toString()),
-      ''
-    );
+  
+  export function textContent( element: any ): string {
+    if (is( element )) {
+      return children( element ).reduce(
+        (reduction, child, _index) =>
+          reduction + (is( child ) ? textContent( child ) : child.toString()),
+        ''
+      );
+    } else if (isSomeOf( element, is )) {
+      return textContent( element.value );
+    } else {
+      return element.toString();
+    }
   }
+  
+  
+  export function getType( value: any, defaultValue: string = '' ): string {
+    if (is( value )) {
+      return value.type;
+    } else if (isSomeOf( value, is )) {
+      return value.value.type;
+    } else {
+      return defaultValue;
+    }
+  }
+  
+  
+  export function hasType( value: any, type: string ): boolean {
+    let element: Element;
+    
+    if (is( value )) {
+      element = value;
+    } else if (isSomeOf( value, is )) {
+      element = value.value;
+    } else {
+      return false;
+    }
+    
+    return element.type.toLowerCase() === type.toLowerCase();
+  }
+  
+  
+  export function hasAttribute( value: any, attr: string ): boolean {
+    let element: Element;
+    
+    if (is( value )) {
+      element = value;
+    } else if (isSomeOf( value, is )) {
+      element = value.value;
+    } else {
+      return false;
+    }
+    
+    return element.props.has( attr );
+  }
+  
 } // namespace Element
 

@@ -2,7 +2,8 @@ import { Rules, Style } from '../types';
 import { repeat, need } from '../utilities'
 import { Element } from '../../../immutable/element';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { map, fold, mapNullable } from 'fp-ts/lib/Option';
+import { map, fold, mapNullable, filter, getOrElse, toNullable, isSome } from 'fp-ts/lib/Option';
+import { getOrThrow } from '../../../helpers';
 
 const CommonmarkRules: Rules = {
   
@@ -26,8 +27,8 @@ const CommonmarkRules: Rules = {
     filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
     replacement( content, traverse, options ) {
-      const hLevel = Number(traverse.needElement().type.charAt(1))
-
+      const hLevel = Number( traverse.element.value.type.charAt( 1 ) )
+      
       if (options.headingStyle === 'setext' && hLevel < 3) {
         const underline = repeat((hLevel === 1 ? '=' : '-'), content.length)
         return (
@@ -53,16 +54,10 @@ const CommonmarkRules: Rules = {
     filter: ['ul', 'ol'],
 
     replacement( content, traverse, _options ) {
-      return pipe(
-        traverse.parentElement,
-        mapNullable(
-          parent => (parent.type === 'li' && traverse.isLastElement()) || null
-        ),
-        fold(
-          ()    => '\n\n' + content + '\n\n',
-          _true => '\n' + content,
-        )
-      );
+      return Element.hasType( traverse.parentElement, 'li' ) &&
+              traverse.isLastElement()
+            ? '\n' + content
+            : '\n\n' + content + '\n\n';
     }
   },
 
@@ -76,11 +71,12 @@ const CommonmarkRules: Rules = {
         .replace(/\n/gm, '\n    ') // indent
       
       let prefix = options.bulletListMarker + '   '
-      const parent = traverse.parentElement
       
-      if (parent && parent.type === 'OL') {
-        var start = parent.props.get( 'start' )
-        var index = need( traverse.index );
+      const parent = traverse.parentElement.value;
+      
+      if (Element.hasType( parent, 'ol' )) {
+        const start = parent.props.get( 'start' )
+        const index = traverse.index.value;
         
         prefix = (start ? Number(start) + index : index + 1) + '.  '
       }
@@ -88,7 +84,7 @@ const CommonmarkRules: Rules = {
       return (
         prefix +
         content +
-        (traverse.nextSibling && !/\n$/.test(content) ? '\n' : '')
+        (traverse.hasNextSibling && !/\n$/.test(content) ? '\n' : '')
       )
     }
   },
@@ -97,19 +93,21 @@ const CommonmarkRules: Rules = {
     filter( traverse, options ) {
       return (
         options.codeBlockStyle === Style.CodeBlock.indented &&
-        traverse.element !== null &&
-        traverse.element.type === 'PRE' &&
-        traverse.firstChild !== null &&
-        traverse.firstChild.type === 'CODE'
+        Element.hasType( traverse.element, 'pre' ) &&
+        Element.hasType( traverse.firstChild, 'code' )
       )
     },
 
     replacement( _content, traverse, _options ) {
       return (
         '\n\n    ' +
-        Element
-          .textContent( need( traverse.firstElementChild ) )
-          .replace( /\n/g, '\n    ' ) +
+        pipe(
+          traverse.firstElementChild,
+          fold(
+            () => '',
+            el => Element.textContent( el ).replace( /\n/g, '\n    ' )
+          ),
+        ) +
         '\n\n'
       )
     }
@@ -119,21 +117,18 @@ const CommonmarkRules: Rules = {
     filter( traverse, options ) {
       return (
         options.codeBlockStyle === Style.CodeBlock.fenced &&
-        traverse.element !== null &&
-        traverse.element.type === 'PRE' &&
-        traverse.firstChild !== null &&
-        traverse.firstChild.type === 'CODE'
+        Element.hasType( traverse.element, 'pre' ) &&
+        Element.hasType( traverse.firstChild, 'code' )
       )
     },
 
     replacement( _content, traverse, options ) {
-      const className = traverse.firstChildWhenElement
-      var className = element.firstChild.className || ''
-      var language = (className.match(/language-(\S+)/) || [null, ''])[1]
+      const className = Element.getType( traverse.firstChild );
+      const language = (className.match(/language-(\S+)/) || [null, ''])[1]
 
       return (
         '\n\n' + options.fence + language + '\n' +
-        element.firstChild.textContent +
+        Element.textContent( traverse.firstChild ) +
         '\n' + options.fence + '\n\n'
       )
     }
@@ -148,47 +143,55 @@ const CommonmarkRules: Rules = {
   },
 
   inlineLink: {
-    filter( element, options ) {
+    filter( traverse, options ) {
       return (
-        options.linkStyle === 'inlined' &&
-        element.nodeName === 'A' &&
-        element.getAttribute('href')
-      )
+        options.linkStyle === Style.Link.inline &&
+        Element.hasType( traverse.element, 'a' ) &&
+        traverse.element.value.props.has( 'href' )
+      );
     },
 
-    replacement(  content, traverse, _options ) {
-      var href = element.getAttribute('href')
-      var title = element.title ? ' "' + element.title + '"' : ''
-      return '[' + content + '](' + href + title + ')'
+    replacement( content, traverse, _options ) {
+      const element = traverse.element.value;
+      const href = element.props.get( 'href' );
+      const title =
+        element.props.has( 'title' )
+          ? ' "' + element.props.get( 'title' ) + '"'
+          : '';
+      return '[' + content + '](' + href + title + ')';
     }
   },
 
   referenceLink: {
-    filter( element, options ) {
+    filter( traverse, options ) {
       return (
-        options.linkStyle === 'referenced' &&
-        element.nodeName === 'A' &&
-        element.getAttribute('href')
+        options.linkStyle === Style.Link.ref &&
+        Element.hasType( traverse.element, 'a' ) &&
+        traverse.element.value.props.has( 'href' )
       )
     },
 
-    replacement(  content, traverse, options ) {
-      var href = element.getAttribute('href')
-      var title = element.title ? ' "' + element.title + '"' : ''
-      var replacement
-      var reference
+    replacement( content, traverse, options ) {
+      const element = traverse.element.value;
+      const href = element.props.get( 'href' );
+      const title =
+        element.props.has( 'title' )
+          ? ' "' + element.props.get( 'title' ) + '"'
+          : '';
+      let replacement: string;
+      let reference: string;
 
-      switch (options.linkReferenceStyle) {
-        case 'collapsed':
+      switch (options.referenceLinkStyle) {
+        case Style.ReferenceLink.collapse:
           replacement = '[' + content + '][]'
           reference = '[' + content + ']: ' + href + title
           break
-        case 'shortcut':
+        case Style.ReferenceLink.shortcut:
           replacement = '[' + content + ']'
           reference = '[' + content + ']: ' + href + title
           break
         default:
-          var id = this.references.length + 1
+          const id = this.references.length + 1
           replacement = '[' + content + '][' + id + ']'
           reference = '[' + id + ']: ' + href + title
       }
@@ -200,7 +203,7 @@ const CommonmarkRules: Rules = {
     references: [],
 
     append( options ) {
-      var references = ''
+      const references = ''
       if (this.references.length) {
         references = '\n\n' + this.references.join('\n') + '\n\n'
         this.references = [] // Reset references
@@ -229,8 +232,8 @@ const CommonmarkRules: Rules = {
 
   code: {
     filter( element, _options ) {
-      var hasSiblings = element.previousSibling || element.nextSibling
-      var isCodeBlock = element.parentNode.nodeName === 'PRE' && !hasSiblings
+      const hasSiblings = element.previousSibling || element.nextSibling
+      const isCodeBlock = element.parentNode.nodeName === 'PRE' && !hasSiblings
 
       return element.nodeName === 'CODE' && !isCodeBlock
     },
@@ -238,10 +241,10 @@ const CommonmarkRules: Rules = {
     replacement( content,  _traverse, _options ) {
       if (!content.trim()) return ''
 
-      var delimiter = '`'
-      var leadingSpace = ''
-      var trailingSpace = ''
-      var matches = content.match(/`+/gm)
+      const delimiter = '`'
+      const leadingSpace = ''
+      const trailingSpace = ''
+      const matches = content.match(/`+/gm)
       if (matches) {
         if (/^`/.test(content)) leadingSpace = ' '
         if (/`$/.test(content)) trailingSpace = ' '
@@ -256,10 +259,10 @@ const CommonmarkRules: Rules = {
     filter: 'img',
 
     replacement( _content, traverse, _options ) {
-      var alt = element.alt || ''
-      var src = element.getAttribute('src') || ''
-      var title = element.title || ''
-      var titlePart = title ? ' "' + title + '"' : ''
+      const alt = element.alt || ''
+      const src = element.getAttribute('src') || ''
+      const title = element.title || ''
+      const titlePart = title ? ' "' + title + '"' : ''
       return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
     }
   },

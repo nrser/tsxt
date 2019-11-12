@@ -125,6 +125,14 @@ export class Traverse {
     return this.pushPath( ...indexes );
   }
   
+  hasPrev( nodes: number = 1 ): boolean {
+    return this.hasIn( this.path.update( -1, i => 1 - nodes ) );
+  }
+  
+  hasNext( nodes: number = 1 ): boolean {
+    return this.hasIn( this.path.update( -1, i => 1 + nodes ) );
+  }
+  
   prev( nodes: number = 1 ): Option<Traverse>{
     return this.updatePath( -1, i => i - nodes );
   }
@@ -192,27 +200,13 @@ export class Traverse {
   
   // Custom Extensions...
   
-  // withUp<T>( fn: ( up: Traverse ) => T ): null | T;
+  hasPrevSibling(): boolean {
+    return this.hasPrev( 1 );
+  }
   
-  // withUp<T, TIsRoot>(
-  //   fn: ( up: Traverse ) => T,
-  //   isRootValue: TIsRoot,
-  // ): TIsRoot | T;
-  
-  // withUp<T>( fn: ( up: Traverse ) => T, ...args: any[] ) {
-  //   const up = this.up();
-    
-  //   if (up === null) {
-  //     if (args.length > 0) {
-  //       return args[ 0 ];
-  //     } else {
-  //       return null;
-  //     }
-  //   }
-    
-  //   return fn( up );
-  // }
-  
+  hasNextSibling(): boolean {
+    return this.hasNext( 1 );
+  }
   
   get index(): Option<number> {
     return fromNullable( this.path.last() );

@@ -5,6 +5,7 @@ import {
 } from '../../types';
 
 import Traverse from '../../immutable/traverse';
+import ChildElementTraverse from '../../immutable/child_element_traverse';
 
 export namespace Style {
   
@@ -97,12 +98,14 @@ export namespace Style {
 } //  namespace Style
 
 
-export type FilterFn = (traverse: Traverse, options: IOptions) => boolean;
+export type FilterFn =
+  (traverse: ChildElementTraverse, options: IOptions) => boolean;
 
 export type Filter = string | string[] | FilterFn;
 
 export type Replacement =
-  (content: string, traverse: Traverse, options: IOptions) => string;
+  (content: string, traverse: ChildElementTraverse, options: IOptions)
+    => string;
 
 export interface Rule {
   filter: Filter,

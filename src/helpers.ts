@@ -1,5 +1,6 @@
 import I8 from 'immutable';
 import _ from 'lodash/fp';
+import { Option, Some, isNone, isSome } from 'fp-ts/lib/Option';
 
 export interface TemplateLiteralTag<TExpression=any> {
   (strings: TemplateStringsArray, ...expressions: TExpression[] ): string;
@@ -69,5 +70,53 @@ export function findLastOf<TKey, TValue, TOf extends TValue>(
   if (found !== undefined) {
     return found as TOf;
   }
+}
+
+
+export function getOrThrow<T>( message: string ): (option: Option<T>) => T {
+  return (option: Option<T>) => {
+    if (isNone( option )) { throw new Error( message ) }
+    
+    return option.value;
+  }
+}
+
+
+/**
+ * Guard for `Option<T>` using a provided guard for `T`.
+ * 
+ * Note that `none` will always be identified as `Option<T>` since `none` is 
+ * universal across all types.
+ * 
+ * @param value What might be a `Option<T>`.
+ * @param is Guard for `T`.
+ */
+export function isOption<T>(
+  value: any,
+  is: (value: any) => value is T,
+): value is Option<T> {
+  if (!_.isObject( value ) || !_.has( '_tag', value )) { return false }
+  
+  const option = value as Option<T>;
+  
+  return isNone( option ) || (isSome( option ) && is( option.value ));
+}
+
+
+/**
+ * Guard for `Some<T>` using a provided guard for `T`.
+ * 
+ * @param value What might be a `Some<T>`.
+ * @param is Guard for `T`.
+ */
+export function isSomeOf<T>(
+  value: any,
+  is: (value: any) => value is T,
+): value is Some<T> {
+  if (!_.isObject( value ) || !_.has( '_tag', value )) { return false }
+  
+  const option = value as Option<T>;
+  
+  return isSome( option ) && is( option.value );
 }
 
