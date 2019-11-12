@@ -270,29 +270,28 @@ export class Traverse {
       throw new Error( `Can't get data from Element` );
     }
     
-    return this.value.toString();
+    return `${ this.value }`;
   }
   
   set data( value: string ) {
-    if (value === this.value) {
-      return;
-    }
+    // // Short if we're not doing anything useful
+    // if (value === this.value) { return }
     
-    console.log( `SETTING data to ${ value } on ${ this.nodeName } ${ this.value.toString() }` );    
+    // console.log( `SETTING data to ${ value } on ${ this.nodeName } ${ this.value }` );    
     
-    if (this.isElement) {
-      throw new Error( `Can't set data on an Element` );
-    }
+    // if (this.isElement) {
+    //   throw new Error( `Can't set data on an Element` );
+    // }
     
-    const expandedPath =  Traverse.expandPath( this.path );
+    // const expandedPath = Traverse.expandPath( this.path );
     
-    this._root = this._root.setIn( expandedPath, value );
+    // this._root = this._root.setIn( expandedPath, value );
     
-    this._value = this._root.getIn( expandedPath );
+    // this._value = this._root.getIn( expandedPath );
     
-    if (this._value !== value) {
-      throw new Error( `FUCK NUTS\n\n${ this._value }\n\n${ value }`)
-    }
+    // if (this._value !== value) {
+    //   throw new Error( `FUCK NUTS\n\n${ this._value }\n\n${ value }`)
+    // }
   } // #data=
   
   toString(): string {

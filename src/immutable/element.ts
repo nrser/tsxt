@@ -43,20 +43,18 @@ export namespace Element {
     props: Props,
     ...children: any[]
   ): Element {
-    const childList = I8.List<any>( children );
+    const childList = I8.List<any>(
+      _.flatten( children ).filter( c => c !== null )
+    );
+    
     const propMap = I8.Map<any>( props === null ? {} : props );
+    
     const elementProps: ElementProps = propMap.set( 'children', childList );
     
     const element = ElementFactory({
       type,
       props: elementProps,
     });
-    
-    const ch = Element.children( element );
-    
-    if (!(ch instanceof I8.List)) {
-      throw new Error( `FUCK ME\n\n${ ch }\n\n${ print( ch ) }` );
-    }
     
     return element;
   }
