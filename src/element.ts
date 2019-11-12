@@ -2,7 +2,7 @@ import _ from 'lodash/fp';
 import I8 from 'immutable';
 import print from 'print';
 
-import { Props } from '../types';
+import { Props } from './types';
 
 export const TSXT_ELEMENT_TYPE = Symbol.for( 'tsxt.element' );
 

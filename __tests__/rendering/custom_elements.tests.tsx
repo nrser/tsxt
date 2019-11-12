@@ -6,9 +6,8 @@ import _ from 'lodash/fp';
 
 import '../test_helpers';
 
-import Tsxt from '../..';
+import Tsxt, { Element } from '../..';
 import { Props } from '../../lib/types';
-import { Element } from '../../lib/immutable/element';
 
 
 describe( `Custom elements`, () => {

@@ -15,7 +15,7 @@ import {
 
 import { Q } from './helpers';
 
-import { Element } from './immutable/element';
+import { Element } from './element';
 
 
 // Definitions

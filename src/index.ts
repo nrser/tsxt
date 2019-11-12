@@ -2,7 +2,7 @@
 // ===========================================================================
 
 
-import _                from 'lodash/fp';
+import _ from 'lodash/fp';
 
 // ### Project / Package ###
 
@@ -13,7 +13,7 @@ import {
   ITsxt,
 } from './types';
 
-import { createElement  } from './immutable';
+import { Element  } from './element';
 import { render } from './out/markdown';
 
 
@@ -29,10 +29,10 @@ const Tsxt =
   Object.assign(
     ( type: any, props: Props, ...children: any[] ) => {
       if (_.isString( type )) {
-        return createElement( type, props, ...children );
+        return Element.create( type, props, ...children );
         
       } else if (isTsxt( type )) {
-        const root = createElement( 'div', props, ...children );
+        const root = Element.create( 'div', props, ...children );
         return render( root );
         
       } else if (isElementCreator( type )) {
@@ -49,5 +49,9 @@ const Tsxt =
 
 // Exports
 // ===========================================================================
+
+export {
+  Element,
+}
 
 export default Tsxt;

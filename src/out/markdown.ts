@@ -9,8 +9,8 @@ import TurndownService from 'turndown';
 
 // ### Project / Package ###
 
-import { Element } from '../immutable/element';
-import { Traverse } from '../immutable/traverse';
+import { Element } from '../element';
+import { Traverse } from '../traverse';
 
 
 // Definitions

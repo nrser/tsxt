@@ -2,7 +2,7 @@
 // ===========================================================================
 
 import _ from 'lodash/fp';
-import { Element } from './immutable/element';
+import { Element } from './element';
 
 
 // Definitions

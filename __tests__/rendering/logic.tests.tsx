@@ -7,8 +7,7 @@ import I8 from 'immutable';
 
 import '../test_helpers';
 
-import Tsxt from '../..';
-import { Element } from '../../lib/immutable/element';
+import Tsxt, { Element } from '../..';
 
 
 describe( `Test logic out - conditionals, loops, etc...` , () => {
