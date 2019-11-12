@@ -1,37 +1,35 @@
 import _ from 'lodash/fp';
 import I8 from 'immutable';
-import print from 'print';
 
-import { Props } from './types';
-
-export const TSXT_ELEMENT_TYPE = Symbol.for( 'tsxt.element' );
-
-export interface ElementProps extends I8.Map<string, any> {
-  get( key: 'children' ): I8.List<any>;
-  get( key: string ): any;
-  get<TNotSet>( key: string, notSetValue: TNotSet ): any | TNotSet;
-}
-
-export interface IElement {
-  $$typeof: typeof TSXT_ELEMENT_TYPE;
-  type: string;
-  props: ElementProps;
-}
-
-export const ElementFactory =
-  I8.Record<IElement>({
-    $$typeof: TSXT_ELEMENT_TYPE,
-    type: '',
-    props: I8.Map<any>({ children: I8.List<any>() }) as ElementProps,
-  }, 'Tsxt.Element' );
-
-export type Element = ReturnType<typeof ElementFactory>;
+import { Props as PropsObject } from './types';
 
 export namespace Element {
+  
+  export const TYPE_OF = Symbol.for( 'tsxt.element' );
+  
   export type Children = I8.List<any>;
   
+  export interface Props extends I8.Map<string, any> {
+    get( key: 'children' ): I8.List<any>;
+    get( key: string ): any;
+    get<TNotSet>( key: string, notSetValue: TNotSet ): any | TNotSet;
+  }
+  
+  export interface Interface {
+    $$typeof: typeof TYPE_OF;
+    type: string;
+    props: Props;
+  }
+  
+  export const Factory =
+    I8.Record<Interface>({
+      $$typeof: TYPE_OF,
+      type: '',
+      props: I8.Map<any>({ children: I8.List<any>() }) as Props,
+    }, 'Tsxt.Element' );
+  
   export function is( value: any ): value is Element {
-    return _.get( '$$typeof', value ) === TSXT_ELEMENT_TYPE;
+    return _.get( '$$typeof', value ) === TYPE_OF;
   }
   
   export function children( element: Element ): Children {
@@ -40,7 +38,7 @@ export namespace Element {
   
   export function create(
     type: string,
-    props: Props,
+    props: PropsObject,
     ...children: any[]
   ): Element {
     const childList = I8.List<any>(
@@ -49,15 +47,15 @@ export namespace Element {
     
     const propMap = I8.Map<any>( props === null ? {} : props );
     
-    const elementProps: ElementProps = propMap.set( 'children', childList );
+    const elementProps: Props = propMap.set( 'children', childList );
     
-    const element = ElementFactory({
+    const element = Factory({
       type,
       props: elementProps,
     });
     
     return element;
-  }
+  }  // create()
   
   
   export function textContent( value: any ): string {
@@ -76,7 +74,7 @@ export namespace Element {
     } else {
       return value.toString();
     }
-  }
+  } // textContent()
   
   
   export function getType( value: any, defaultValue: string = '' ): string {
@@ -85,7 +83,7 @@ export namespace Element {
     } else {
       return defaultValue;
     }
-  }
+  } // getType()
   
   
   export function hasType( value: any, type: string ): boolean {
@@ -98,7 +96,9 @@ export namespace Element {
     }
     
     return element.type.toLowerCase() === type.toLowerCase();
-  }
+  } // hasType()
   
 } // namespace Element
 
+
+export type Element = ReturnType<typeof Element.Factory>;

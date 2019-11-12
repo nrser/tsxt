@@ -13,7 +13,7 @@ import {
   ITsxt,
 } from './types';
 
-import { Element  } from './element';
+import { Element } from './element';
 import { render } from './out/markdown';
 
 
@@ -46,6 +46,7 @@ const Tsxt =
       IS_TSXT: true,
     },
   ) as ITsxt;
+
 
 // Exports
 // ===========================================================================
