@@ -2,6 +2,7 @@
 // ===========================================================================
 
 
+import I8               from 'immutable';
 import _                from 'lodash/fp';
 import TurndownService  from 'TURNDOWN';
 
@@ -21,7 +22,9 @@ import {
 
 import {
   createElement as I8CreateElement,
-} from './dom';
+} from './immutable';
+
+import { Traverse } from './immutable/traverse';
 
 // Definitions
 // ===========================================================================
@@ -83,10 +86,14 @@ const I8Tsxt =
         return I8CreateElement( type, props, ...children );
         
       } else if (isTsxt( type )) {
-        return 'TODO';
+        const root = I8CreateElement( 'div', props, ...children );
+        const traverse = Traverse.for( root, I8.List<number>() );
+        
+        return TURNDOWN_SERVICE.turndown( traverse as any );
         
       } else if (isElementCreator( type )) {
-        return type( props, ...children );
+        // return type( props, ...children );
+        throw new Error( `Not implemented` );
         
       } else {
         throw new Error( `Not sure what this 'type' is: ${ type }` );
@@ -100,4 +107,4 @@ const I8Tsxt =
 // Exports
 // ===========================================================================
 
-export default Tsxt;
+export default I8Tsxt;

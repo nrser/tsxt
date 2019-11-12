@@ -22,14 +22,15 @@
     "@types/turndown": "^5.0.0",
     "jest": "^24.9.0",
     "jest-extended": "^0.11.2",
+    "print": "^1.1.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.2"
   },
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./lib",
     "build": "tsc",
     "test": "jest",
-    "all": "yarn run clean && yarn run build && yarn run test",
+    "all": "yarn run clean && yarn run build",
     "prepublish": "yarn run all"
   },
   "jest": {

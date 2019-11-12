@@ -19,16 +19,9 @@
 // Imports
 // ===========================================================================
 
-// ### Deps ###
-
-import I8 from 'immutable';
-import _ from 'lodash/fp';
-
 // ### Project / Package ###
 
-import {
-  Element,
-} from './immutable/element';
+import { Element, } from './element';
 
 
 // Definitions

@@ -2756,6 +2756,11 @@ pretty-format@^24.9.0:
     ansi-styles "^3.2.0"
     react-is "^16.8.4"
 
+print@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/print/-/print-1.1.0.tgz#207f3e38feb2cecee9c3f23be6043d8464a74695"
+  integrity sha512-T6E8V86DDNi2ufBoAfMbZOelsh/6xn9Gp9bPAsxZQNM3DegEow2iwhr3nxD0zVYwqRbKY5hjSMYRQoSVZepZGA==
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"

@@ -1,16 +1,15 @@
 import _ from 'lodash/fp';
 import I8 from 'immutable';
+import print from 'print';
 
 import { Props } from '../types';
-import { isSomeOf } from '../helpers';
-import { isSome } from 'fp-ts/lib/Option';
-
 
 export const TSXT_ELEMENT_TYPE = Symbol.for( 'tsxt.element' );
 
 export interface ElementProps extends I8.Map<string, any> {
   get( key: 'children' ): I8.List<any>;
   get( key: string ): any;
+  get<TNotSet>( key: string, notSetValue: TNotSet ): any | TNotSet;
 }
 
 export interface IElement {
@@ -28,19 +27,15 @@ export const ElementFactory =
 
 export type Element = ReturnType<typeof ElementFactory>;
 
-export function isElement( value: any ): value is Element {
-  return _.get( '$$type', value ) === TSXT_ELEMENT_TYPE;
-}
-
 export namespace Element {
   export type Children = I8.List<any>;
   
   export function is( value: any ): value is Element {
-    return _.get( '$$type', value ) === TSXT_ELEMENT_TYPE;
+    return _.get( '$$typeof', value ) === TSXT_ELEMENT_TYPE;
   }
   
   export function children( element: Element ): Children {
-    return  element.props.get( 'children' );
+    return element.props.get( 'children' );
   }
   
   export function create(
@@ -48,26 +43,40 @@ export namespace Element {
     props: Props,
     ...children: any[]
   ): Element {
-    return ElementFactory({
+    const childList = I8.List<any>( children );
+    const propMap = I8.Map<string, any>( props === null ? {} : props.toJS() );
+    const elementProps: ElementProps = propMap.set( 'children', childList );
+    
+    const element = ElementFactory({
       type,
-      props:
-        I8.Map<any>( props || {} )
-          .set( 'children', I8.List<any>( children ) ) as ElementProps,
+      props: elementProps,
     });
+    
+    const ch = Element.children( element );
+    
+    if (!(ch instanceof I8.List)) {
+      throw new Error( `FUCK ME\n\n${ ch }\n\n${ print( ch ) }` );
+    }
+    
+    return element;
   }
   
   
-  export function textContent( element: any ): string {
-    if (is( element )) {
-      return children( element ).reduce(
-        (reduction, child, _index) =>
-          reduction + (is( child ) ? textContent( child ) : child.toString()),
-        ''
-      );
-    } else if (isSomeOf( element, is )) {
-      return textContent( element.value );
+  export function textContent( value: any ): string {
+    if (is( value )) {
+      try {
+        return children( value ).reduce(
+          (reduction, child, _index) =>
+            reduction + (is( child ) ? textContent( child ) : child.toString()),
+          ''
+        );
+        } catch (e) {
+          throw new Error(
+            `is Element but bad children?!?\n\n${ value.toString() }`
+          );
+        }
     } else {
-      return element.toString();
+      return value.toString();
     }
   }
   
@@ -75,8 +84,6 @@ export namespace Element {
   export function getType( value: any, defaultValue: string = '' ): string {
     if (is( value )) {
       return value.type;
-    } else if (isSomeOf( value, is )) {
-      return value.value.type;
     } else {
       return defaultValue;
     }
@@ -88,28 +95,11 @@ export namespace Element {
     
     if (is( value )) {
       element = value;
-    } else if (isSomeOf( value, is )) {
-      element = value.value;
     } else {
       return false;
     }
     
     return element.type.toLowerCase() === type.toLowerCase();
-  }
-  
-  
-  export function hasAttribute( value: any, attr: string ): boolean {
-    let element: Element;
-    
-    if (is( value )) {
-      element = value;
-    } else if (isSomeOf( value, is )) {
-      element = value.value;
-    } else {
-      return false;
-    }
-    
-    return element.props.has( attr );
   }
   
 } // namespace Element

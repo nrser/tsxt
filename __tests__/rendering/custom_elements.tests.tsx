@@ -8,6 +8,7 @@ import '../test_helpers';
 
 import Tsxt from '../..';
 import { Props } from '../../lib/types';
+import { Element } from '../../lib/immutable/element';
 
 
 describe( `Custom elements`, () => {
@@ -21,7 +22,7 @@ describe( `Custom elements`, () => {
      * @param children 
      */
     const Bookend =
-      (attrs: Props, ...children: Node[] ): Node => {
+      (attrs: Props, ...children: any[] ): Element => {
         const style = ( text: string ) => {
           let node = text;
           
