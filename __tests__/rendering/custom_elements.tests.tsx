@@ -7,6 +7,7 @@ import _ from 'lodash/fp';
 import '../test_helpers';
 
 import Tsxt, { Element } from '../..';
+// import '../../lib/jsx';
 import { Props } from '../../lib/types';
 
 
@@ -23,29 +24,29 @@ describe( `Custom elements`, () => {
     const Bookend =
       (attrs: Props, ...children: any[] ): Element => {
         const style = ( text: string ) => {
-          let node = text;
-          
-          if (_.get( 'em', attrs)) { node = <em>{ node }</em> }
-          
-          return node;
+          if (_.get( 'em', attrs )) {
+            return <em>{ text }</em>;
+          } else {
+            return text;
+          }
         }
         
-        return Tsxt(
+        return Element.create(
           'div',
           attrs,
           <p>{ style( `I injected this first.` ) }</p>,
           ...children,
-          <p>{  style( `I injected this last.` ) }</p>,
+          <p>{ style( `I injected this last.` ) }</p>,
         );
       };
     
-    const md_em = <Tsxt>
+    const md_em = Tsxt.md(
       <Bookend em={ true }>
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
       </Bookend>
-    </Tsxt>;
+    );
     
     expect( md_em ).toEqualLines(
       `_I injected this first._`,
@@ -59,13 +60,13 @@ describe( `Custom elements`, () => {
       `_I injected this last._`,
     );
     
-    const md_no_em = <Tsxt>
+    const md_no_em = Tsxt.md(
       <Bookend>
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
       </Bookend>
-    </Tsxt>;
+    );
     
     expect( md_no_em ).toEqualLines(
       `I injected this first.`,

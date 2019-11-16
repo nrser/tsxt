@@ -17,8 +17,8 @@ describe( `Map helper`, () => {
       z: 'zee! zee! zee!',
     };
     
-    const md = 
-      <Tsxt>
+    const md = Tsxt.md(
+      <document>
         <p>Here's my list:</p>
         
         <ol>
@@ -26,7 +26,8 @@ describe( `Map helper`, () => {
             <li>{ (k: any, v: any) => `${ k } => ${ v }` }</li>
           </Map>
         </ol>
-      </Tsxt>;
+      </document>
+    );
     
     expect( md  ).toEqualLines(
         `Here's my list:`,

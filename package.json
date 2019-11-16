@@ -29,8 +29,9 @@
   "scripts": {
     "clean": "rm -rf ./lib",
     "build": "tsc",
+    "rebuild": "yarn run clean && yarn run build",
     "test": "jest",
-    "all": "yarn run clean && yarn run build && yarn run test",
+    "all": "yarn run rebuild && yarn run test",
     "prepublish": "yarn run all"
   },
   "jest": {

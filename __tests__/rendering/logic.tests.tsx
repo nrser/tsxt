@@ -7,7 +7,8 @@ import I8 from 'immutable';
 
 import '../test_helpers';
 
-import Tsxt, { Element } from '../..';
+import Tsxt, { Element } from '../../lib';
+import '../../lib/jsx';
 
 
 describe( `Test logic out - conditionals, loops, etc...` , () => {
@@ -15,21 +16,23 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
   describe( `making a list and checking it twice`, () => {
     
     function getMessageElements( props?: Record<string, any> ) {
-      return <div>
-        <p>It { props ? 'has' : 'has not' } props!</p>
-        {
-          props
-          ? <ul>
-              { _.map( ([k, v]) => <li>{ k }: { v }</li>,
-                        _.toPairs( props ) ) }
-            </ul>
-          : null
-        }
-      </div>
+      return (
+        <div>
+          <p>It { props ? 'has' : 'has not' } props!</p>
+          {
+            props
+            ? <ul>
+                { _.map( ([k, v]) => <li>{ k }: { v }</li>,
+                          _.toPairs( props ) ) }
+              </ul>
+            : null
+          }
+        </div>
+      );
     };
     
     it( `empty message has the right element structure`, () => {
-      const root = getMessageElements() as Element;
+      const root = getMessageElements();
       
       expect( Element.is( root ) ).toBe( true );
       
@@ -42,8 +45,8 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
     
     it( `non-empty message has the right element structure`, () => {
       const root =
-        getMessageElements({ prefix: 'a/x', separator: '/' }) as Element;
-      
+        getMessageElements({ prefix: 'a/x', separator: '/' });
+        
       expect( Element.is( root ) ).toBe( true );
       
       const children = Element.children( root );
@@ -73,17 +76,19 @@ describe( `Test logic out - conditionals, loops, etc...` , () => {
     });
     
     function getMessage( props?: Record<string, any> ) {
-      return <Tsxt>
-        <p>It { props ? 'has' : 'has not' } props!</p>
-        {
-          props
-          ? <ul>
-              { _.map( ([k, v]) => <li>{ k }: { v }</li>,
-                        _.toPairs( props ) ) }
-            </ul>
-          : null
-        }
-      </Tsxt>
+      return Tsxt.md(
+        <div>
+          <p>It { props ? 'has' : 'has not' } props!</p>
+          {
+            props
+            ? <ul>
+                { _.map( ([k, v]) => <li>{ k }: { v }</li>,
+                          _.toPairs( props ) ) }
+              </ul>
+            : null
+          }
+        </div>
+      );
     };
     
     it( `maps the list when given props`, () => {

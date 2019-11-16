@@ -8,7 +8,7 @@ export namespace Element {
   // Types
   // =========================================================================
   
-  export const TYPE_OF = Symbol.for( 'tsxt.element' );
+  export const TYPE_OF: Symbol = Symbol.for( 'tsxt.element' );
   
   export type Children = I8.List<any>;
   

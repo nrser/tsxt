@@ -1,0 +1,19 @@
+/* @jsx Tsxt */
+
+import Tsxt from '../../..';
+
+const doc =
+  <Tsxt>
+    <ul>
+    <li><p>This is a list item with two paragraphs. Lorem ipsum dolor
+    sit amet, consectetuer adipiscing elit. Aliquam hendrerit
+    mi posuere lectus.</p>
+
+    <p>Vestibulum enim wisi, viverra nec, fringilla in, laoreet
+    vitae, risus. Donec sit amet nisl. Aliquam semper ipsum
+    sit amet velit.</p></li>
+    <li><p>Suspendisse id sem consectetuer libero luctus adipiscing.</p></li>
+    </ul>
+  </Tsxt>;
+
+export default doc;

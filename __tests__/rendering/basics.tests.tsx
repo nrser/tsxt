@@ -7,22 +7,26 @@ import _ from 'lodash/fp';
 import '../test_helpers';
 
 import Tsxt from '../..';
-
+import '../../lib/jsx';
 
 describe( `most basic tests`, () => {
   it( `renders an example`, () => {
-    const md = <Tsxt>
-      <h1>Let's Start Here</h1>
-      
-      <p>
-        There's a few global problems I'd like to talk about today...
-      </p>
-      
-      <ol>
-        <li>Weak ollies</li>
-        <li>Lighter theft</li>
-      </ol>
-    </Tsxt>;
+    // const el = <p>blah</p>;
+    
+    const md = Tsxt.md(
+      <div>
+        <h1>Let's Start Here</h1>
+        
+        <p>
+          There's a few global problems I'd like to talk about today...
+        </p>
+        
+        <ol>
+          <li>Weak ollies</li>
+          <li>Lighter theft</li>
+        </ol>
+      </div>
+    );
     
     expect( md ).toEqualLines(
         `Let's Start Here`,

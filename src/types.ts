@@ -40,13 +40,15 @@ export interface ITsxt extends IsTsxt {
    * The render form - when passed *itself* the [[Tsxt]] function renders the
    * elements and returns a string.
    */
-  ( type: IsTsxt, props: Props, ...children: any[] ): string;
+  ( type: IsTsxt, props: Props, ...children: any[] ): string | Element;
+  
+  ( type: string, props: Props, ...children: any[] ): Element;
   
   /**
    * The common form - creates [[Element]] nodes by proxying to
    * [[createElement]].
    */
-  ( type: Type, props: Props, ...children: any[] ): Element;
+  ( type: CreatorFunction, props: Props, ...children: any[] ): Element;
   
   /**
    * The IDFK form :/
@@ -55,6 +57,7 @@ export interface ITsxt extends IsTsxt {
    *       
    *        Maybe has something to do with the intrinsic JSX types?
    */
-  ( type: any, props: Props, ...children: any[] ): never;
+  ( type: any, props: Props, ...children: any[] ): Element;
   
+  md( root: JSX.Element ): string;
 } // interface ITsxt
