@@ -1,0 +1,26 @@
+{
+  "name": "tsxt-dev-react_jsx",
+  "version": "0.1.0",
+  "description": "Playground for a regular TS/React/JSX project",
+  "main": "lib/index.js",
+  "author": "NRSER",
+  "license": "BSD-2-Clause",
+  "private": false,
+  "dependencies": {
+    "react": "^16.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.6.9",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "typescript": "^3.6.2"
+  },
+  "scripts": {
+    "clean": "rm -rf ./lib",
+    "build": "tsc",
+    "rebuild": "yarn run clean && yarn run build",
+    "rb": "yarn run rebuild",
+    "all": "yarn run rebuild",
+    "prepublish": "yarn run all"
+  }
+}
