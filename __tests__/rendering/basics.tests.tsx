@@ -11,8 +11,6 @@ import '../../lib/jsx';
 
 describe( `most basic tests`, () => {
   it( `renders an example`, () => {
-    // const el = <p>blah</p>;
-    
     const md = Tsxt.md(
       <div>
         <h1>Let's Start Here</h1>

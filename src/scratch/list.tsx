@@ -1,9 +1,9 @@
 /* @jsx Tsxt */
 
-import Tsxt from '../../..';
+import Tsxt from '..';
 
 const doc =
-  <Tsxt>
+  <div>
     <ul>
     <li><p>This is a list item with two paragraphs. Lorem ipsum dolor
     sit amet, consectetuer adipiscing elit. Aliquam hendrerit
@@ -14,6 +14,6 @@ const doc =
     sit amet velit.</p></li>
     <li><p>Suspendisse id sem consectetuer libero luctus adipiscing.</p></li>
     </ul>
-  </Tsxt>;
+  </div>;
 
 export default doc;
