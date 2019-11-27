@@ -1,13 +1,13 @@
 /* @jsx Tsxt */
 
-import 'jest';
-import 'jest-extended';
-import _ from 'lodash/fp';
+import "jest";
+import "jest-extended";
+import _ from "lodash/fp";
 
-import '../test_helpers';
+import "../test_helpers";
 
-import Tsxt from '../..';
-import '../../lib/jsx';
+import Tsxt from "../..";
+import "../../lib/jsx";
 
 describe( `most basic tests`, () => {
   it( `renders an example`, () => {
@@ -23,7 +23,7 @@ describe( `most basic tests`, () => {
           <li>Weak ollies</li>
           <li>Lighter theft</li>
         </ol>
-      </div>
+      </div>,
     );
     
     expect( md ).toEqualLines(
