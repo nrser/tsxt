@@ -1,7 +1,9 @@
 declare namespace jest {
-  interface Matchers<R>  {
+  // `T` has something to do with snapshots it looks like
+  interface Matchers<R, T>  {
     toEqualLines(...lines: string[]): R;
     toBeIterator(): R;
+    toIterate(values: any[], options?: {andBeDone?: boolean}): R;
   }
 }
 

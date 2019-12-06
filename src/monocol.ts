@@ -1,6 +1,6 @@
+import invariant from "invariant";
 import _ from "lodash/fp";
 import wordwrap from "wordwrap";
-import invariant from "invariant";
 
 type None = undefined | null;
 
@@ -130,7 +130,7 @@ export function* iterateLines(
     const iterator = iterable[Symbol.iterator]();
     let next = iterator.next();
     let width: number = 0;
-    let buffer: string = '';
+    let buffer: string = "";
 
     // Outer-most loop just keeps going unless the iterator runs dry, which
     // might be never

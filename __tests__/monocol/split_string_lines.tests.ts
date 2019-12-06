@@ -9,14 +9,44 @@ const iterateStringLines = __tests__.iterateStringLines;
 
 describe(`iterateStringLines()`, () => {
   it(`does basic shit 'cause it a basic function`, () => {
-    const gen = iterateStringLines("a\nb\nc");
+    expect(iterateStringLines("a\nb\nc"))
+      .toIterate(["a", "b", "c"]);
     
-    expect(gen).toBeIterator();
-    // expect(gen).toBeObject();
-    // expect(gen).toHaveProperty("next");
-    
-    const first = gen.next();
-    expect(first).toHaveProperty("done", false);
-    expect(first).toHaveProperty("value", "a");
+    expect(iterateStringLines("a"))
+      .toIterate(["a"]);
+      
+    expect(iterateStringLines(""))
+      .toIterate([]);
+      
+    expect(iterateStringLines("a\nb\nc\n"))
+      .toIterate(["a", "b", "c"]);
+      
+    expect(iterateStringLines("\n"))
+      .toIterate([""]);
+      
+    expect(iterateStringLines("\n\n"))
+      .toIterate(["", ""]);
   });
+  
+  it(`word wraps`, () => {
+    expect(
+      iterateStringLines(
+        `Wrap text using a more sophisticated algorithm such as the Knuth ` +
+        `and Plass TeX algorithm. If your language provides this, you get ` +
+        `easy extra credit, but you must reference documentation indicating ` +
+        `that the algorithm is something better than a simple minimimum ` +
+        `length algorithm.`,
+        42,
+      ),
+    ).toIterate([
+      `Wrap text using a more sophisticated`,
+      `algorithm such as the Knuth and Plass TeX`,
+      `algorithm. If your language provides`,
+      `this, you get easy extra credit, but you`,
+      `must reference documentation indicating`,
+      `that the algorithm is something better`,
+      `than a simple minimimum length algorithm.`,
+    ]);
+  });
+
 });
