@@ -33,3 +33,6 @@ rules:
       - true
       - ignore-blank-lines
       - ignore-comments
+    arrow-parens:
+      - true
+      - ban-single-arg-parens
