@@ -15,7 +15,9 @@ interface N_1Brand {
 
 type N_1 = number & N_1Brand;
 
-const isN_1 = (x: any): x is N_1 => _.isInteger(x) && x > 0;
+function isN_1(x: any): x is N_1 {
+  return _.isInteger(x) && x > 0;
+}
 
 type PositiveInteger = N_1;
 
@@ -114,9 +116,55 @@ function* iterateStringLines(
   yield* splitLines(str);
 }
 
-// function* iterateNonStringLines(
+
+function* iterateNonStringLines(
+  iterable: StringIterable,
+  maxWidth?: Optional<PositiveInteger>,
+): StringGenerator {
+  // NOTE to self: this sucks. You did bad. Stupid fuck.
   
-// )
+  const iterator = iterable[Symbol.iterator]();
+  let next = iterator.next();
+  let buffer: string = "";
+
+  // Outer-most loop just keeps going unless the iterator runs dry, which
+  // might be never
+  while (!next.done) {
+    buffer += next.value;
+
+    if (next.value.includes("\n")) {
+      if (next.value.endsWith("\n")) {
+        yield* iterateStringLines(buffer, maxWidth);
+        buffer = "";
+      } else {
+        // Ok, screwy 'cause we have some hangin'
+        const lines = buffer.trimRight().split("\n");
+        buffer = (lines.pop() || "").trimLeft();
+        yield* lines;
+      }
+    }
+    
+    if (maxWidth && buffer.length > maxWidth) {
+      const minTrim = buffer.length - maxWidth;
+      const match = buffer.match(new RegExp(`^(.*)\\s(.{${minTrim},})$`));
+      
+      if (match === null) {
+        // Busted, fuck it..?
+        yield buffer.slice(0, maxWidth).trimRight();
+        buffer = buffer.slice(maxWidth).trimLeft();
+      } else {
+        yield match[1].trimRight();
+        buffer = match[2].trimLeft();
+      }
+    }
+
+    next = iterator.next();
+  } // while !next.done
+  
+  if (!_.isEmpty(buffer)) {
+    yield buffer;
+  }
+} // iterateNonStringLines()
 
 
 export function* iterateLines(
@@ -125,31 +173,8 @@ export function* iterateLines(
 ): StringGenerator {
   if (_.isString(iterable)) {
     yield* iterateStringLines(iterable, maxWidth);
-
   } else {
-    const iterator = iterable[Symbol.iterator]();
-    let next = iterator.next();
-    let width: number = 0;
-    let buffer: string = "";
-
-    // Outer-most loop just keeps going unless the iterator runs dry, which
-    // might be never
-    while (!next.done) {
-      buffer += next.value;
-      width += next.value.length;
-
-      if (next.value.includes("\n")) {
-        const lines = buffer.split("\n");
-        
-        if (buffer.endsWith("\n")) { lines.pop(); }
-        
-        yield* lines;
-        
-        
-      }
-
-      next = iterator.next();
-    }
+    yield* iterateNonStringLines(iterable, maxWidth);
   }
 }
 
@@ -191,6 +216,7 @@ export let __tests__: any;
 
 if (process.env.JEST_WORKER_ID) {
   __tests__ = {
+    iterateNonStringLines,
     iterateStringLines,
     splitLines,
   };
