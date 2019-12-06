@@ -12,26 +12,27 @@ function iter(str: Iterable<string>) {
 }
 
 describe(`iterateNonStringLines()`, () => {
+
   it(`does basic shit 'cause it a basic function`, () => {
     expect(iterateNonStringLines(iter("a\nb\nc")))
       .toIterate(["a", "b", "c"]);
-    
+
     expect(iterateNonStringLines(iter("a")))
       .toIterate(["a"]);
-      
+
     expect(iterateNonStringLines(iter("")))
       .toIterate([]);
-      
+
     expect(iterateNonStringLines(iter("a\nb\nc\n")))
       .toIterate(["a", "b", "c"]);
-      
+
     expect(iterateNonStringLines(iter("\n")))
       .toIterate([""]);
-      
+
     expect(iterateNonStringLines(iter("\n\n")))
       .toIterate(["", ""]);
   });
-  
+
   it(`word wraps`, () => {
     expect(
       iterateNonStringLines(
