@@ -39,9 +39,11 @@ describe(`generate()`, () => {
     // tslint:enable: max-line-length
       
     const gen = generate([s1, s2], 80);
-    const out = Array.from(gen).join("");
+    const out = Array.from(gen).join("\n");
     
-    // expect(out).toEqual(expected);
+    console.log(out);
+    
+    expect(out).toEqual(expected);
   });
 
 });

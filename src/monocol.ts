@@ -270,22 +270,27 @@ export function* generate(
     )();
 
   while (_.any(b => !b.next.done, fixedLengthCols)) {
-    for (const col of cols) {
-      if (col.next.done) {
-        if (isN_1(col.width)) { yield* genFill(col.width); }
-
-      } else {
-        yield col.next.value;
-
-        if (isN_0(col.width)) {
-          yield* genFill(col.width - col.next.value.length);
+    const line = cols.reduce(
+      (buffer, col) => {
+        if (col.next.done) {
+          if (isN_1(col.width)) { buffer += SPACE.repeat(col.width); }
+  
+        } else {
+          buffer += col.next.value;
+  
+          if (isN_0(col.width)) {
+            buffer += SPACE.repeat(col.width - col.next.value.length);
+          }
+  
+          col.next = col.iterator.next();
         }
-
-        col.next = col.iterator.next();
-      }
-    }
-
-    yield "\n";
+        
+        return buffer;
+      },
+      "",
+    );
+    
+    yield line;
   }
 }
 
