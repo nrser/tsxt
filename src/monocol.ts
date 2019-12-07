@@ -2,24 +2,40 @@ import invariant from "invariant";
 import _ from "lodash/fp";
 import wordwrap from "wordwrap";
 
+
+type IsFn<T> = (x: any) => x is T;
+
 type None = undefined | null;
 
 function isNone(x: any): x is None {
   return x === undefined || x === null;
 }
 
-// tslint:disable-next-line: class-name
-interface N_1Brand {
-  readonly N_1BrandID: unique symbol;
+function assertIs<T>(isFn: IsFn<T>, x: any): asserts x is T {
+  if (!isFn(x)) {
+    const name = isFn.name.replace(/^is/, "") || "???";
+    throw new Error(`"is" assertion failed: ${x} is *not* a(n) ${name}`);
+  }
 }
 
+
+function as<T>(isFn: IsFn<T>, x: any): T {
+  assertIs(isFn, x);
+  return x;
+}
+
+
+// tslint:disable-next-line: class-name
+interface N_0Brand { readonly N_0BrandID: unique symbol; }
+
+// tslint:disable-next-line: class-name
+interface N_1Brand { readonly N_1BrandID: unique symbol; }
+
+type N_0 = number & N_0Brand;
 type N_1 = number & N_1Brand;
 
-function isN_1(x: any): x is N_1 {
-  return _.isInteger(x) && x > 0;
-}
-
-type PositiveInteger = N_1;
+function isN_0(x: any): x is N_0 { return _.isInteger(x) && x >= 0; }
+function isN_1(x: any): x is N_1 { return _.isInteger(x) && x > 0; }
 
 type Optional<T> = None | T;
 
@@ -37,7 +53,7 @@ export interface FixedLength {
 }
 
 export function isFixedLength(x: any): x is FixedLength {
-  return _.has(x, "length") &&
+  return _.has("length", x) &&
     _.isInteger(x.length) &&
     x.length >= 0;
 }
@@ -47,20 +63,53 @@ export interface FixedWidth {
 }
 
 export function isFixedWidth(x: any): x is FixedWidth {
-  return _.has(x, "colWidth") &&
+  return _.has("colWidth", x) &&
     _.isInteger(x.colWidth) &&
     x.colWidth >= 0;
 }
 
+interface Col {
+  iterator: StringIterator;
+  next: IteratorResult<string, void>;
+  width: Optional<N_0>;
+}
+
+
+function calcUnboundedRenderWidths(
+  iterables: StringIterable[],
+): Array<null | N_0> {
+  return iterables.map(iterable => {
+    if (isFixedWidth(iterable)) {
+      // Fixed width columns are simple displayed as their width
+      return as(isN_0, iterable.colWidth);
+
+    } else if (isFixedLength(iterable)) {
+      // Fixed length (but *not* width) columns are let run wild - no width
+      return null;
+
+    } else {
+      // And for columns that don't have any width *or* length bounds we would 
+      // have no idea how wide to make them, so collapse them to 0 width
+      return as(isN_0, 0);
+    }
+  });
+}
+
 
 export function calcRenderWidths(
-  colWidths: Array<null | number>,
-  totalWidth: number,
-): number[] {
-  let unfixedWidth = totalWidth;
-  let unfixedColCount = 0;
+  iterables: StringIterable[],
+  totalWidth: Optional<number>,
+): Array<N_0 | null> {
+  const colWidths = calcUnboundedRenderWidths(iterables);
 
-  colWidths.forEach((width) => {
+  if (isNone(totalWidth)) { return colWidths; }
+
+  assertIs(isN_0, totalWidth);
+
+  let unfixedWidth: number = totalWidth;
+  let unfixedColCount: number = 0;
+
+  colWidths.forEach(width => {
     if (width === null) {
       unfixedColCount += 1;
     } else {
@@ -69,48 +118,49 @@ export function calcRenderWidths(
   });
 
   if (unfixedWidth < 0) {
-    throw new Error(`Fixed columns too big brah`);
+    throw new Error(`TODO: Fixed columns overflow total width big brah`);
   }
 
   if (unfixedColCount === 0) {
     // NOTE Even using `_.every( _.isNumber, colWidths )` didn't let TS figure
-    //      out that `colWidths` is `number[]`, so whatever... just tell it so.
-    return colWidths as number[];
+    //      out that `colWidths` is `N_0[]`, so whatever... just tell it so.
+    return colWidths.map(x => as(isN_0, x));
   }
 
   const unfixedColWidth = Math.floor(unfixedWidth / unfixedColCount);
   let remainder = unfixedWidth % unfixedColCount;
 
-  return colWidths.map((width) => {
+  return colWidths.map(width => {
     if (width === null) {
       if (remainder > 0) {
         remainder -= 1;
-        return 1 + unfixedColWidth;
+        return as(isN_0, 1 + unfixedColWidth);
       } else {
-        return unfixedColWidth;
+        return as(isN_0, unfixedColWidth);
       }
-    } else {
-      return width;
     }
+
+    return width;
   });
 }
+
 
 function splitLines(str: string): string[] {
   // Empty string → empty array (*no* lines)
   if (_.isEmpty(str)) { return []; }
-  
+
   const lines = str.split("\n");
-  
+
   // If the last character is a newline drop the final '' entry 
   if (str.endsWith("\n")) { lines.pop(); }
-  
+
   return lines;
 }
 
 
 function* iterateStringLines(
   str: string,
-  maxWidth?: Optional<PositiveInteger>,
+  maxWidth?: Optional<N_0>,
 ): StringGenerator {
   if (is(maxWidth)) { str = wordwrap(maxWidth)(str); }
   yield* splitLines(str);
@@ -119,10 +169,10 @@ function* iterateStringLines(
 
 function* iterateNonStringLines(
   iterable: StringIterable,
-  maxWidth?: Optional<PositiveInteger>,
+  maxWidth?: Optional<N_0>,
 ): StringGenerator {
   // NOTE to self: this sucks. You did bad. Stupid fuck.
-  
+
   const iterator = iterable[Symbol.iterator]();
   let next = iterator.next();
   let buffer: string = "";
@@ -143,11 +193,11 @@ function* iterateNonStringLines(
         yield* lines;
       }
     }
-    
+
     if (maxWidth && buffer.length > maxWidth) {
       const minTrim = buffer.length - maxWidth;
       const match = buffer.match(new RegExp(`^(.*)\\s(.{${minTrim},})$`));
-      
+
       if (match === null) {
         // Busted, fuck it..?
         yield buffer.slice(0, maxWidth).trimRight();
@@ -160,7 +210,7 @@ function* iterateNonStringLines(
 
     next = iterator.next();
   } // while !next.done
-  
+
   if (!_.isEmpty(buffer)) {
     yield buffer;
   }
@@ -169,7 +219,7 @@ function* iterateNonStringLines(
 
 export function* iterateLines(
   iterable: StringIterable,
-  maxWidth?: Optional<PositiveInteger>,
+  maxWidth?: Optional<N_0>,
 ): StringGenerator {
   if (_.isString(iterable)) {
     yield* iterateStringLines(iterable, maxWidth);
@@ -178,30 +228,65 @@ export function* iterateLines(
   }
 }
 
+const SPACE = " ";
+
+export function* genFill(
+  length: number,
+  char: string = SPACE,
+): StringGenerator {
+  for (let n = 0; n < length; n++) { yield char; }
+}
+
 
 export function* generate(
   iterables: StringIterable[],
-  width: None | number,
+  width: Optional<number>,
 ): StringGenerator {
-  const colWidths = iterables.map((iterable) =>
-    isFixedWidth(iterable) ? iterable.colWidth : null);
+  if (!isNone(width)) { assertIs(isN_0, width); }
 
-  const renderWidths =
-    isNone(width) ? colWidths : calcRenderWidths(colWidths, width);
+  const fixedLengthCols: Col[] = [];
 
-  const fixedLengthIterators = [] as StringIterator[];
+  const cols: Col[] =
+    _.pipe(
+      () => iterables,
 
-  const iterators = iterables.map((iterable) => {
-    const iterator = iterable[Symbol.iterator]();
+      _.zip(calcRenderWidths(iterables, width)),
 
-    if (isFixedLength(iterable)) {
-      fixedLengthIterators.push(iterator);
+      _.reject(([renderWidth, iterable]) => renderWidth === 0),
+
+      _.map(([renderWidth, iterable]) => {
+        const iterator = iterateLines(iterable as StringIterable, renderWidth);
+
+        const col = {
+          iterator,
+          next: iterator.next(),
+          width: renderWidth,
+        };
+
+        if (isFixedLength(iterable)) { fixedLengthCols.push(col); }
+
+        return col;
+      }),
+    )();
+
+  while (_.any(b => !b.next.done, fixedLengthCols)) {
+    for (const col of cols) {
+      if (col.next.done) {
+        if (isN_1(col.width)) { yield* genFill(col.width); }
+
+      } else {
+        yield col.next.value;
+
+        if (isN_0(col.width)) {
+          yield* genFill(col.width - col.next.value.length);
+        }
+
+        col.next = col.iterator.next();
+      }
     }
 
-    return iterator;
-  });
-
-  return;
+    yield "\n";
+  }
 }
 
 
