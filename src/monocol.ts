@@ -12,8 +12,10 @@ import {
 } from "./types";
 
 
-export type StringGenerator = Generator<string, void, never>;
+export type StringGenerator = Generator<string, void, any>;
 export type StringIterator = IterableIterator<string> | StringGenerator;
+
+export type LineGenerator = Generator<StringGenerator, void, any>;
 
 export interface StringIterable {
   [Symbol.iterator](): StringIterator;
@@ -134,7 +136,7 @@ function* iterateStringLines(
   maxWidth?: Optional<N_0>,
 ): StringGenerator {
   if (is(maxWidth)) { str = wordwrap(maxWidth)(str); }
-  yield* splitLines(str);
+  for (const line of splitLines(str)) { yield line;  }
 }
 
 
@@ -201,18 +203,11 @@ export function* iterateLines(
 
 const SPACE = " ";
 
-export function* genFill(
-  length: number,
-  char: string = SPACE,
-): StringGenerator {
-  for (let n = 0; n < length; n++) { yield char; }
-}
-
 
 export function* generate(
   iterables: StringIterable[],
   width: Optional<number>,
-): StringGenerator {
+): LineGenerator {
   if (!isNone(width)) { assertIs(isN_0, width); }
 
   const fixedLengthCols: Col[] = [];
@@ -241,28 +236,46 @@ export function* generate(
     )();
 
   while (_.any(b => !b.next.done, fixedLengthCols)) {
-    const line = cols.reduce(
-      (buffer, col) => {
-        if (col.next.done) {
-          if (isN_1(col.width)) { buffer += SPACE.repeat(col.width); }
-  
-        } else {
-          buffer += col.next.value;
-  
-          if (isN_0(col.width)) {
-            buffer += SPACE.repeat(col.width - col.next.value.length);
-          }
-  
-          col.next = col.iterator.next();
-        }
-        
-        return buffer;
-      },
-      "",
-    );
-    
-    yield line;
+    yield generateLine(cols);
   }
+}
+
+
+function* generateLine(cols: Col[]): StringGenerator {
+  for (const col of cols) {
+    if (col.next.done) {
+      if (isN_1(col.width)) {
+        for (let n = 0, l = col.width; n < l; n++) { yield SPACE; }
+      }
+
+    } else {
+      yield col.next.value;
+
+      if (isN_0(col.width)) {
+        for (let n = 0, l = col.width - col.next.value.length; n < l; n++) {
+          yield SPACE;
+        }
+      }
+
+      col.next = col.iterator.next();
+    }
+  }
+}
+
+
+export function render(
+  iterables: StringIterable[],
+  width: Optional<number>,
+): string {
+  let out = "";
+  
+  for (const line of generate(iterables, width)) {
+    for (const str of line) {
+      out += str;
+    }
+    out += "\n";
+  }
+  return out;
 }
 
 
