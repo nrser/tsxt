@@ -1,26 +1,25 @@
-import I8 from 'immutable';
-import _ from 'lodash/fp';
-import { Option, Some, isNone, isSome } from 'fp-ts/lib/Option';
+import { isNone, isSome, Option, Some } from "fp-ts/lib/Option";
+import I8 from "immutable";
+import _ from "lodash/fp";
+import { IsFn } from "./types";
 
-export interface TemplateLiteralTag<TExpression=any> {
-  (strings: TemplateStringsArray, ...expressions: TExpression[] ): string;
-}
+export type TemplateLiteralTag<TExpression= any> =
+  (strings: TemplateStringsArray, ...expressions: TExpression[] ) => string;
 
-export interface SimpleTag<TExpression=any>
-  extends TemplateLiteralTag<TExpression>
-{
+export interface SimpleTag<TExpression= any>
+  extends TemplateLiteralTag<TExpression> {
   transformExpression: (expression: TExpression) => string;
 }
 
-export function createSimpleTag<TExpression=any>(
+export function createSimpleTag<TExpression= any>(
   transformExpression: (expression: TExpression) => string,
   name?: string,
 ): SimpleTag<TExpression> {
   const tag =
     ( strings: TemplateStringsArray, ...exps: any[] ): string => {
-      let render = strings[ 0 ]; 
+      let render = strings[ 0 ];
     
-      for( let i = 0; i < exps.length; i++ ) {
+      for ( let i = 0; i < exps.length; i++ ) {
         render += transformExpression( exps[ i ] ) + strings[ i + 1 ];
       }
       
@@ -30,7 +29,7 @@ export function createSimpleTag<TExpression=any>(
   tag.transformExpression =  transformExpression;
   
   if (name) {
-    Object.defineProperty( tag, 'name', { value: name.toString(), 
+    Object.defineProperty( tag, "name", { value: name.toString(),
                                           writable: false } );
   }
     
@@ -39,8 +38,8 @@ export function createSimpleTag<TExpression=any>(
 
 
 export function codeFormat( value: any ): string {
-  if (_.isNull( value )) { return '`null`' }
-  if (_.isUndefined( value )) { return '`undefined`' }
+  if (_.isNull( value )) { return "`null`"; }
+  if (_.isUndefined( value )) { return "`undefined`"; }
   
   return `\`${ value }\``;
 }
@@ -75,10 +74,10 @@ export function findLastOf<TKey, TValue, TOf extends TValue>(
 
 export function getOrThrow<T>( message: string ): (option: Option<T>) => T {
   return (option: Option<T>) => {
-    if (isNone( option )) { throw new Error( message ) }
+    if (isNone( option )) { throw new Error( message ); }
     
     return option.value;
-  }
+  };
 }
 
 
@@ -95,7 +94,7 @@ export function isOption<T>(
   value: any,
   is: (value: any) => value is T,
 ): value is Option<T> {
-  if (!_.isObject( value ) || !_.has( '_tag', value )) { return false }
+  if (!_.isObject( value ) || !_.has( "_tag", value )) { return false; }
   
   const option = value as Option<T>;
   
@@ -113,10 +112,23 @@ export function isSomeOf<T>(
   value: any,
   is: (value: any) => value is T,
 ): value is Some<T> {
-  if (!_.isObject( value ) || !_.has( '_tag', value )) { return false }
+  if (!_.isObject( value ) || !_.has( "_tag", value )) { return false; }
   
   const option = value as Option<T>;
   
   return isSome( option ) && is( option.value );
 }
 
+
+export function assertIs<T>(isFn: IsFn<T>, x: any): asserts x is T {
+  if (!isFn(x)) {
+    const name = isFn.name.replace(/^is/, "") || "???";
+    throw new Error(`"is" assertion failed: ${x} is *not* a(n) ${name}`);
+  }
+}
+
+
+export function as<T>(isFn: IsFn<T>, x: any): T {
+  assertIs(isFn, x);
+  return x;
+}

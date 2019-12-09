@@ -1,45 +1,16 @@
 import invariant from "invariant";
 import _ from "lodash/fp";
 import wordwrap from "wordwrap";
+import { as, assertIs } from "./helpers";
+import {
+  is,
+  isN_0,
+  isN_1,
+  isNone,
+  N_0,
+  Optional,
+} from "./types";
 
-
-type IsFn<T> = (x: any) => x is T;
-
-type None = undefined | null;
-
-function isNone(x: any): x is None {
-  return x === undefined || x === null;
-}
-
-function assertIs<T>(isFn: IsFn<T>, x: any): asserts x is T {
-  if (!isFn(x)) {
-    const name = isFn.name.replace(/^is/, "") || "???";
-    throw new Error(`"is" assertion failed: ${x} is *not* a(n) ${name}`);
-  }
-}
-
-
-function as<T>(isFn: IsFn<T>, x: any): T {
-  assertIs(isFn, x);
-  return x;
-}
-
-
-// tslint:disable-next-line: class-name
-interface N_0Brand { readonly N_0BrandID: unique symbol; }
-
-// tslint:disable-next-line: class-name
-interface N_1Brand { readonly N_1BrandID: unique symbol; }
-
-type N_0 = number & N_0Brand;
-type N_1 = number & N_1Brand;
-
-function isN_0(x: any): x is N_0 { return _.isInteger(x) && x >= 0; }
-function isN_1(x: any): x is N_1 { return _.isInteger(x) && x > 0; }
-
-type Optional<T> = None | T;
-
-const is = <T>(x: Optional<T>): x is T => !isNone(x);
 
 export type StringGenerator = Generator<string, void, never>;
 export type StringIterator = IterableIterator<string> | StringGenerator;
