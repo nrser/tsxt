@@ -14,7 +14,7 @@ describe(`render()`, () => {
       `and Plass TeX algorithm. If your language provides this, you get ` +
       `easy extra credit, but you must reference documentation ` +
       `indicating that the algorithm is something better than a simple ` +
-      `minimimum length algorithm.`;
+      `minimum length algorithm.`;
       
     const s2 =
       `And More!\n\n` +
@@ -32,16 +32,12 @@ describe(`render()`, () => {
       `credit, but you must reference          reference docs.                         \n` +
       `documentation indicating that the                                               \n` +
       `algorithm is something better than a    Once you've learned about the matchers  \n` +
-      `simple minimimum length algorithm.      that are available, a good next step is \n` +
+      `simple minimum length algorithm.        that are available, a good next step is \n` +
       `                                        to check out how Jest lets you test     \n` +
       `                                        asynchronous code.                      \n`
     );
     
-    const out = render([s1, s2], 80);
-    
-    // console.log(out);
-    
-    expect(out).toEqual(expected);
+    expect(render([s1, s2], 80)).toEqual(expected);
   });
 
 });

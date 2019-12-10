@@ -1,7 +1,7 @@
 import invariant from "invariant";
 import _ from "lodash/fp";
 import wordwrap from "wordwrap";
-import { as, assertIs } from "./helpers";
+import { as, assertIs } from "../helpers";
 import {
   is,
   isN_0,
@@ -9,7 +9,7 @@ import {
   isNone,
   N_0,
   Optional,
-} from "./types";
+} from "../types";
 
 
 export type StringGenerator = Generator<string, void, any>;
@@ -275,9 +275,23 @@ export function render(
     }
     out += "\n";
   }
+  
   return out;
 }
 
+
+export function* generateStrings(
+  iterables: StringIterable[],
+  width: Optional<number>,
+): StringGenerator {
+  for (const line of generate(iterables, width)) {
+    yield* line;
+    yield "\n";
+  }
+}
+
+
+// const stdout = process.stdout;
 
 // Testing
 // ===========================================================================
