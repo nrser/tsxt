@@ -8,6 +8,8 @@ import { Optional } from "../types";
  * Stream rendered strings directly to a NodeJS [[Writable]], such as
  * `process.stdout`.
  * 
+ * @note  NodeJS only!!!
+ * 
  * @param stream      A NodeJS writable stream, such as `process.stdout`.
  * @param iterables   String iterables to be displayed as columns.
  * @param width       Width (in characters) to render at.
