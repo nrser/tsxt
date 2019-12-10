@@ -45,9 +45,8 @@ const expected = (
 
 describe(`writeToStream()`, () => {
 
-  describe(`render to a tmp file`, () => {
+  describe(`to a tmp file`, () => {
     it(`renders two string columns side-by-side`, async () => {
-      
       const path = await tmpFile();
       const stream = createWriteStream(path, {flags: "w"});
       await writeToStream(stream, [s1, s2], 80);
@@ -59,7 +58,18 @@ describe(`writeToStream()`, () => {
       
       expect(read).toEqual(expected);
     });
-  }); // describe render to a tmp file
-  
+    
+    it(`raises an error when given an ended stream`, async () => {
+      const path = await tmpFile();
+      const stream = createWriteStream(path, {flags: "w"});
+      stream.end();
+      await finished(stream);
+      
+      // https://stackoverflow.com/a/47887098/1658272
+      await expect(writeToStream(stream, [s1, s2], 80))
+        .rejects.toThrow("write after end");
+    });
+    
+  }); // describe to a tmp file
   
 });
