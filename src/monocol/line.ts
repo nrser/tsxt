@@ -2,23 +2,12 @@ import invariant from "invariant";
 import _ from "lodash/fp";
 import print from "print";
 
-import { as, assertIs } from "../helpers";
-
 import {
-  is,
-  isN_0,
-  isN_1,
-  isNone,
   N_0,
-  Optional,
 } from "../types";
 
 import {
-  isFixedLength,
-  isFixedWidth,
   isIterator,
-  LineGenerator,
-  StringGenerator,
   StringIterable,
   StringIterator,
 } from "./types";
