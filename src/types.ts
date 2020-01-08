@@ -1,14 +1,12 @@
 // Imports
 // ===========================================================================
 
-import _ from 'lodash/fp';
-import { Element } from './element';
+import _ from "lodash/fp";
+import { Element } from "./element";
 
 
 // Definitions
 // ===========================================================================
-
-export type IsFn<T> = (x: any) => x is T;
 
 export type None = undefined | null;
 
@@ -17,6 +15,10 @@ export function isNone(x: any): x is None {
 }
 
 export const is = <T>(x: Optional<T>): x is T => !isNone(x);
+
+export type IsFn<T> = (x: any) => x is T;
+
+export type Class<T> = new (...args: any) => T;
 
 // tslint:disable-next-line: class-name
 interface N_0Brand { readonly N_0BrandID: unique symbol; }
@@ -41,11 +43,11 @@ export type Props = null | Record<string, any>;
  */
 export type CreatorFunction =
   (props: Props, ...children: any[]) => any;
-  
-export function isCreatorFunction( value: any ): value is CreatorFunction {
-  return _.isFunction( value ) && value.length === 1;
+
+export function isCreatorFunction(value: any): value is CreatorFunction {
+  return _.isFunction(value) && value.length === 1;
 }
-  
+
 export type Type = string | CreatorFunction;
 
 /**
@@ -56,33 +58,35 @@ export interface IsTsxt {
   IS_TSXT: true;
 }
 
-export function isTsxt( value: any ): value is IsTsxt  {
-  return _.get( 'IS_TSXT', value ) === true;
+export function isTsxt(value: any): value is IsTsxt {
+  return _.get("IS_TSXT", value) === true;
 }
 
 export interface ITsxt extends IsTsxt {
+  
   /**
    * The render form - when passed *itself* the [[Tsxt]] function renders the
    * elements and returns a string.
    */
-  ( type: IsTsxt, props: Props, ...children: any[] ): string | Element;
-  
-  ( type: string, props: Props, ...children: any[] ): Element;
+  (type: IsTsxt, props: Props, ...children: any[]): string | Element;
   
   /**
    * The common form - creates [[Element]] nodes by proxying to
    * [[createElement]].
    */
-  ( type: CreatorFunction, props: Props, ...children: any[] ): Element;
-  
+  (type: CreatorFunction | string, props: Props, ...children: any[]): Element;
+
   /**
-   * The IDFK form :/
+   * The IDFK form - DON'T INTENTIONALLY USE! `type` should be
+   * [[CreatorFunction]] or `string`.
    * 
    * FIXME  It *needs* this to type check `<Tsxt>...</Tsxt>`
    *       
    *        Maybe has something to do with the intrinsic JSX types?
    */
-  ( type: any, props: Props, ...children: any[] ): Element;
+  // tslint:disable-next-line:unified-signatures
+  (type: any, props: Props, ...children: any[]): Element;
+
+  md(root: JSX.Element): string;
   
-  md( root: JSX.Element ): string;
 } // interface ITsxt

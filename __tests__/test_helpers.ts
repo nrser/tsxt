@@ -18,11 +18,33 @@ import ExtMatchers from "jest-extended/dist/matchers";
 // import * as JMU from "jest-matcher-utils";
 
 
-export type ComposeFn = () => any;
+type ComposeFn = () => any;
 
 
 function p(x: any): string {
   return `\n\n${print(x)}\n\n`;
+}
+
+
+function asIteratorYieldResult<T>(
+  result: IteratorResult<T, unknown>,
+): IteratorYieldResult<T> {
+  if (result.done) { throw new Error(`Expected yield, but was done`); }
+  return result;
+}
+
+
+export function nth<T>(iterator: Iterator<T>, n: number): T {
+  if (!_.isInteger(n) || n < 1) {
+    throw new Error(`n must be integer > 0, given ${n}`);
+  }
+  
+  for (let i = 1; i <= n; i++) {
+    const result = asIteratorYieldResult(iterator.next());
+    if (i === n) { return result.value; }
+  }
+  
+  throw new Error(`Should be unreachable!`);
 }
 
 

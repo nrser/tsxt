@@ -1,7 +1,8 @@
 import { isNone, isSome, Option, Some } from "fp-ts/lib/Option";
 import I8 from "immutable";
 import _ from "lodash/fp";
-import { IsFn } from "./types";
+import print from "print";
+import { Class, IsFn } from "./types";
 
 export type TemplateLiteralTag<TExpression= any> =
   (strings: TemplateStringsArray, ...expressions: TExpression[] ) => string;
@@ -128,7 +129,19 @@ export function assertIs<T>(isFn: IsFn<T>, x: any): asserts x is T {
 }
 
 
+export function assertIsA<T>(cls: Class<T>, x: any): asserts x is T {
+  if (!(x instanceof cls)) {
+    throw new Error(`Expected a ${ cls }, got: ${ print(x) }`);
+  }
+}
+
+
 export function as<T>(isFn: IsFn<T>, x: any): T {
   assertIs(isFn, x);
+  return x;
+}
+
+export function asA<T>(cls: Class<T>, x: any): T {
+  assertIsA<T>(cls, x);
   return x;
 }

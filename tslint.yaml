@@ -40,3 +40,12 @@ rules:
     no-empty:
       - true
       - allow-empty-catch
+    max-classes-per-file:
+      - false
+    variable-name:
+      - ban-keywords
+      - check-format
+      - allow-leading-underscore
+    object-literal-key-quotes:
+      - true
+      - as-needed

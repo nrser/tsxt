@@ -1,7 +1,8 @@
 import { once } from "events";
 import { finished, Writable } from "stream";
-import { generate, StringIterable } from ".";
+import { generate } from ".";
 import { Optional } from "../types";
+import { StringIterable } from "./types";
 
 
 /**

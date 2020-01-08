@@ -1,7 +1,9 @@
 import invariant from "invariant";
 import _ from "lodash/fp";
 import wordwrap from "wordwrap";
+
 import { as, assertIs } from "../helpers";
+
 import {
   is,
   isN_0,
@@ -11,35 +13,15 @@ import {
   Optional,
 } from "../types";
 
+import {
+  isFixedLength,
+  isFixedWidth,
+  LineGenerator,
+  StringGenerator,
+  StringIterable,
+  StringIterator,
+} from "./types";
 
-export type StringGenerator = Generator<string, void, any>;
-export type StringIterator = IterableIterator<string> | StringGenerator;
-
-export type LineGenerator = Generator<StringGenerator, void, any>;
-
-export interface StringIterable {
-  [Symbol.iterator](): StringIterator;
-}
-
-export interface FixedLength {
-  length: number;
-}
-
-export function isFixedLength(x: any): x is FixedLength {
-  return _.has("length", x) &&
-    _.isInteger(x.length) &&
-    x.length >= 0;
-}
-
-export interface FixedWidth {
-  colWidth: number;
-}
-
-export function isFixedWidth(x: any): x is FixedWidth {
-  return _.has("colWidth", x) &&
-    _.isInteger(x.colWidth) &&
-    x.colWidth >= 0;
-}
 
 interface Col {
   iterator: StringIterator;
