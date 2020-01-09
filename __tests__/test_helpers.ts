@@ -5,7 +5,10 @@
  * Yeah um this stuff helps you with your tests.
  */
 
+import FS from "fs";
+import YAML from "js-yaml";
 import _ from "lodash/fp";
+import Path from "path";
 import print from "print";
 
 import Matchers from "expect/build/matchers";
@@ -16,7 +19,6 @@ import "jest-extended";
 import ExtMatchers from "jest-extended/dist/matchers";
 
 // import * as JMU from "jest-matcher-utils";
-
 
 type ComposeFn = () => any;
 
@@ -47,6 +49,13 @@ export function nth<T>(iterator: Iterator<T>, n: number): T {
   throw new Error(`Should be unreachable!`);
 }
 
+export function resolveTestsPath(path: string): string {
+  return Path.resolve(__dirname, path);
+}
+
+export function loadYAML(path: string): any {
+  return YAML.safeLoad(FS.readFileSync(resolveTestsPath(path), "utf8"));
+}
 
 export function isCustomMatcherMessage(x: any): x is () => string {
   return _.isFunction(x) && x.length === 0;

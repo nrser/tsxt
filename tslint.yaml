@@ -3,49 +3,76 @@ extends: tslint:recommended
 
 # @see https://palantir.github.io/tslint/rules/
 rules:
-    max-line-length:
-      - true
-      - limit: 80
-        # Ignore long links in comments. Or at least try to. Seems to work ok.
-        ignore-pattern: "^\\s*\\/\\/.*https?:\/\/"
-        check-strings: true
-        check-regex: true
-    new-parens: true
-    no-arg: true
-    no-bitwise: true
-    no-conditional-assignment: true
-    no-consecutive-blank-lines: false
-    no-console:
-      severity: warning
-      options:
-        - debug
-        - info
-        - log
-        - time
-        - timeEnd
-        - trace
-    interface-name: false
-    quotemark:
-      - true
-      - double
-      - avoid-escape
-    no-trailing-whitespace:
-      - true
-      - ignore-blank-lines
-      - ignore-comments
-    arrow-parens:
-      - true
-      - ban-single-arg-parens
-    # Empty `catch (e) {}` are fine when ya need 'em
-    no-empty:
-      - true
-      - allow-empty-catch
-    max-classes-per-file:
-      - false
-    variable-name:
-      - ban-keywords
-      - check-format
-      - allow-leading-underscore
-    object-literal-key-quotes:
-      - true
-      - as-needed
+  max-line-length:
+    - true
+    - limit: 80
+      # Ignore long links in comments. Or at least try to. Seems to work ok.
+      ignore-pattern: "^\\s*\\/\\/.*https?:\/\/"
+      check-strings: true
+      check-regex: true
+  new-parens: true
+  no-arg: true
+  no-bitwise: true
+  no-conditional-assignment: true
+  no-consecutive-blank-lines: false
+  no-console:
+    severity: warning
+    options:
+      - debug
+      - info
+      - log
+      - time
+      - timeEnd
+      - trace
+  interface-name: false
+  quotemark:
+    - true
+    - double
+    - avoid-escape
+  no-trailing-whitespace:
+    - true
+    - ignore-blank-lines
+    - ignore-comments
+  arrow-parens:
+    - true
+    - ban-single-arg-parens
+  # Empty `catch (e) {}` are fine when ya need 'em
+  no-empty:
+    - true
+    - allow-empty-catch
+  max-classes-per-file:
+    - false
+  variable-name:
+    - ban-keywords
+    - check-format
+    - allow-leading-underscore
+  object-literal-key-quotes:
+    - true
+    - as-needed
+  
+  # https://palantir.github.io/tslint/rules/member-ordering/
+  member-ordering:
+    - true
+    - order:
+        - public-static-field
+        - protected-static-field
+        - private-static-field
+        
+        - public-static-method
+        - protected-static-method
+        - private-static-method
+        
+        - public-instance-field
+        - protected-instance-field
+        - private-instance-field
+        
+        - public-constructor
+        - protected-constructor
+        - private-constructor
+        
+        # Then getters and setters... which there is no support for?!
+        
+        - public-instance-method
+        - protected-instance-method
+        - private-instance-method
+      alphabetize: true

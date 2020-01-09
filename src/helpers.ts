@@ -124,7 +124,9 @@ export function isSomeOf<T>(
 export function assertIs<T>(isFn: IsFn<T>, x: any): asserts x is T {
   if (!isFn(x)) {
     const name = isFn.name.replace(/^is/, "") || "???";
-    throw new Error(`"is" assertion failed: ${x} is *not* a(n) ${name}`);
+    throw new Error(
+      `"is" assertion failed - is *not* a(n) ${name}: ${ print(x) }`,
+    );
   }
 }
 
