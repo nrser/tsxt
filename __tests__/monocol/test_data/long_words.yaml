@@ -29,11 +29,14 @@ tests:
   
   - desc: when the word appears start-of-paragraph
     it:
-      - desc: blah
+      - desc: works as expected
         source: |
           A first paragraph up here...
           
           longlonglonglonglonglonglonglong words are fun!
+          
+          You should try them.
+          
         expected: |
           A first
           paragraph up
@@ -41,3 +44,6 @@ tests:
           
           longlonglonglon…
           words are fun!
+          
+          You should try
+          them.

@@ -1,14 +1,14 @@
 /* @jsx Tsxt */
 
-import 'jest';
-import 'jest-extended';
-import _ from 'lodash/fp';
+import "jest";
+import "jest-extended";
+import _ from "lodash/fp";
 
-import '../test_helpers';
+import "../test_helpers";
 
-import Tsxt, { Element } from '../..';
+import Tsxt, { Element } from "../..";
 // import '../../lib/jsx';
-import { Props } from '../../lib/types';
+import { Props } from "../../lib/types";
 
 
 describe( `Custom elements`, () => {
@@ -24,15 +24,15 @@ describe( `Custom elements`, () => {
     const Bookend =
       (attrs: Props, ...children: any[] ): Element => {
         const style = ( text: string ) => {
-          if (_.get( 'em', attrs )) {
+          if (_.get( "em", attrs )) {
             return <em>{ text }</em>;
           } else {
             return text;
           }
-        }
+        };
         
         return Element.create(
-          'div',
+          "div",
           attrs,
           <p>{ style( `I injected this first.` ) }</p>,
           ...children,
@@ -45,7 +45,7 @@ describe( `Custom elements`, () => {
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
-      </Bookend>
+      </Bookend>,
     );
     
     expect( md_em ).toEqualLines(
@@ -65,7 +65,7 @@ describe( `Custom elements`, () => {
         <p>Here are the actual children...</p>
         <p>...and here...</p>
         <p>...and finally here.</p>
-      </Bookend>
+      </Bookend>,
     );
     
     expect( md_no_em ).toEqualLines(

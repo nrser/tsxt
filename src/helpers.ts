@@ -4,6 +4,14 @@ import _ from "lodash/fp";
 import print from "print";
 import { Class, IsFn } from "./types";
 
+const debug = !!process.env.P;
+
+export function p(msg: string, ...values: any[]): void {
+  if (!debug) { return; }
+  console.log(msg); // tslint:disable-line
+  for (const v of values) { print.out(v); }
+}
+
 export type TemplateLiteralTag<TExpression= any> =
   (strings: TemplateStringsArray, ...expressions: TExpression[] ) => string;
 

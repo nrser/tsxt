@@ -3,19 +3,19 @@
 
 // ### Deps ###
 
-import _ from  'lodash/fp';
-import invariant from 'invariant';
-import I8 from 'immutable';
+import I8 from "immutable";
+import invariant from "invariant";
+import _ from  "lodash/fp";
 
 // ### Project / Package ###
 
 import {
   Props,
-} from './types';
+} from "./types";
 
-import { Q } from './helpers';
+import { Q } from "./helpers";
 
-import { Element } from './element';
+import { Element } from "./element";
 
 
 // Definitions
@@ -24,9 +24,9 @@ import { Element } from './element';
 function transformNode( key: string, value: any, node: any ): any {
   if (Element.is( node )) {
     return node.updateIn(
-      [ 'props', 'children' ],
+      [ "props", "children" ],
       (children: I8.List<any>) =>
-        children.map( child => transformNode( key, value, child ) )
+        children.map( child => transformNode( key, value, child ) ),
     );
   } else if (_.isFunction( node )) {
     return node.call( undefined, key, value );

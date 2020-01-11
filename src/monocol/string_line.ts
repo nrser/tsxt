@@ -2,6 +2,7 @@ import invariant from "invariant";
 import _ from "lodash/fp";
 import print from "print";
 
+import { p } from "../helpers";
 import { N_0 } from "../types";
 
 import Line from "./line";
@@ -19,14 +20,14 @@ export class StringLine extends Line {
   protected static readonly NEWLINE_REGEXP = /\n/mg;
   
   public static makeRegExp(colWidth: N_0): RegExp {
-    const br = `(?:\\s|\\n|$))`;
+    const br = `(?:\\s|\\n|$)`;
     const nobr = `[^\\s\\n]`;
     
     return new RegExp(
       `\\s*`
       + `(?:(.{0,${colWidth}})\\n(\\n+))|`
-      + `(?:(.{1,${colWidth}})${br}|`
-      + `(?:(.{${colWidth - StringLine.ELLIPSIS.length}})${nobr}*${br}`,
+      + `(?:(.{1,${colWidth}})${br})|`
+      + `(?:(.{${colWidth - StringLine.ELLIPSIS.length}})${nobr}*${br})`,
       "msy",
     );
   }
@@ -43,6 +44,16 @@ export class StringLine extends Line {
   
   protected get str(): string {
     return this.source as string;
+  }
+  
+  public get isTotallyDone(): boolean {
+    p(`Checking done`, {
+      _isTotallyDone: this._isTotallyDone,
+      lastIndex: this.regExp.lastIndex,
+      strLength: this.str.length,
+    });
+    
+    return this._isTotallyDone;
   }
   
   public next(): IteratorResult<string, void> {
@@ -101,20 +112,35 @@ export class StringLine extends Line {
         throw new Error(`Match FAILED!\n${ print(context) }`);
       }
       
-      const str: string = match[1] || match[3] || match[4];
+      p("match", match);
+      
+      let str: string = match[1] || match[3] || match[4];
+      
+      p(`str`, str);
       
       // This is a presumably *faster* way of testing `str !== ""` or
       // `str.length > 0` by (ab)using JavaScript's wonky truthiness, where the
       // empty string is `false` in a boolean sense. 
       if (str) {
         if (StringLine.NEWLINE_REGEXP.test(str)) {
+          if (/\n+$/mg.test(str)) { str = str.trimRight(); }
+          
           const parts = str.split(StringLine.NEWLINE_REGEXP);
           
-          for (let i = 0, l = parts.length; i++; i < l) {
-            if (i > 0) { yield Line.SPACE; }
-            yield parts[i];
+          p("split parts", {parts, length: parts.length});
+          
+          for (let i = 0, l = parts.length; i < l; i++) {
+            if (i > 0) {
+              p(`yielding ' '`);
+              yield Line.SPACE;
+            }
+            if (parts[i]) {
+              p(`yielding parts[${i}]`, parts[i]);
+              yield parts[i];
+            }
           }
         } else {
+          p(`yielding str`, str);
           yield str;
         }
         
@@ -148,7 +174,8 @@ export class StringLine extends Line {
       // 
       // Or, at least that's how I *think* it works. This code was a result of 
       // fiddle/re-factoring cycles to get the test results desired.
-      if (this.regExp.lastIndex ===  this.str.length) {
+      if (this.regExp.lastIndex === this.str.length) {
+        p(`Setting _isTotallyDone`);
         this._isTotallyDone = true;
       } else {
         yield StringLine.NEWLINE;

@@ -11,7 +11,7 @@ import {
   StringIterator,
 } from "../../lib/monocol/types";
 
-import { as } from "../../lib/helpers";
+import { as, p } from "../../lib/helpers";
 import Lines from "../../lib/monocol/lines";
 import { IsFn, isN_0, N_0 } from "../../lib/types";
 
@@ -77,7 +77,7 @@ function isTestData(x: any): x is TestData {
 }
 
 
-export class FixedWidthTestCaseerable
+export class FixedWidthIterable
   implements StringIterable, FixedWidth, FixedLength {
   
   public readonly colWidth: number;
@@ -95,15 +95,22 @@ export class FixedWidthTestCaseerable
   }
 }
 
-export function w(n: number): FixedWidthTestCaseerable {
-  return new FixedWidthTestCaseerable("*".repeat(n));
+export function w(n: number): FixedWidthIterable {
+  return new FixedWidthIterable("*".repeat(n));
 }
 
 export function renderLines(lines: Lines): string {
   let str = "";
   
+  let n = 1;
+  
   for (const line of lines) {
-    for (const s of line) {  str += s; }
+    p(`Rendering line ${n}`);
+    n += 1;
+    for (const s of line) {
+      p(`Received`, s);
+      str += s;
+    }
     str += "\n";
   }
   
@@ -112,7 +119,7 @@ export function renderLines(lines: Lines): string {
   return str;
 }
 
-export function runDataTests(
+export function runTestData(
   data: any,
   block?: (lines: Lines) => void,
 ): void {
