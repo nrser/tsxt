@@ -8,8 +8,9 @@ const debug = !!process.env.P;
 
 export function p(msg: string, ...values: any[]): void {
   if (!debug) { return; }
-  console.log(msg); // tslint:disable-line
-  for (const v of values) { print.out(v); }
+  const valuesStr = values.map(print).join("\n\n");
+  // tslint:disable-next-line
+  console.log(msg + (valuesStr ? "\n\n" + valuesStr + "\n\n" : ""));
 }
 
 export type TemplateLiteralTag<TExpression= any> =

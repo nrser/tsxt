@@ -1,15 +1,6 @@
 colWidth: 16
 
-tests:
-  - desc: when the word appears mid-paragraph
-    it:
-      - desc: truncates that word on it's own line
-        source: Here's a longlonglonglonglonglonglonglong word.
-        expected: |
-          Here's a
-          longlonglonglon…
-          word.
-  
+tests:  
   - desc: when the word appears start-of-source
     it:
       - desc: truncates that word as the first line
@@ -18,6 +9,15 @@ tests:
           longlonglonglon…
           words are dope.
   
+  - desc: when the word appears mid-source
+    it:
+      - desc: truncates that word on it's own line
+        source: Here's a longlonglonglonglonglonglonglong word.
+        expected: |
+          Here's a
+          longlonglonglon…
+          word.
+          
   - desc: when the word appears end-of-source
     it:
       - desc: truncates that word as the last line
@@ -27,23 +27,3 @@ tests:
           that's
           longlonglonglon…
   
-  - desc: when the word appears start-of-paragraph
-    it:
-      - desc: works as expected
-        source: |
-          A first paragraph up here...
-          
-          longlonglonglonglonglonglonglong words are fun!
-          
-          You should try them.
-          
-        expected: |
-          A first
-          paragraph up
-          here...
-          
-          longlonglonglon…
-          words are fun!
-          
-          You should try
-          them.

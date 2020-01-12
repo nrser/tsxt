@@ -105,13 +105,13 @@ export function renderLines(lines: Lines): string {
   let n = 1;
   
   for (const line of lines) {
-    p(`Rendering line ${n}`);
-    n += 1;
+    let lineStr = "";
     for (const s of line) {
-      p(`Received`, s);
-      str += s;
+      lineStr += s;
     }
-    str += "\n";
+    p(`Rendering line ${n}`, lineStr);
+    n += 1;
+    str += `${ lineStr }\n`;
   }
   
   if (!str.endsWith("\n")) { str += "\n"; }

@@ -34,21 +34,6 @@ export class Lines implements IterableIterator<Line> {
     return { done: false, value: this.line };
   }
   
-  public toArray(): string[] {
-    const array = [];
-    let str: string;
-    
-    for (const line of this) {
-      str = "";
-      for (const part of line) {
-        str += part;
-      }
-      array.push(str);
-    }
-    
-    return array;
-  }
-  
 } // class Lines
 
 export default Lines;

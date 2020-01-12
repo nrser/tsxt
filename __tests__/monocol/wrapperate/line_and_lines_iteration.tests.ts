@@ -17,39 +17,25 @@ describe(`iterate lines and line`, () => {
   const text =
     `Magnam expedita est quam quas eos eveniet ad. Et tenetur fuga omnis ` +
     `occaecati vero voluptatibus ipsum amet minus. Et perferendis temporibus ` +
-    `est consectetur quibusdam non quos perspiciatis. Voluptas natus ` +
+    `est consectetur quibusdam non quos perspiciatis.` +
+    `\n\n` +
+    `Voluptas natus ` +
     `recusandae et itaque voluptatem quis dolores itaque. Repellendus ` +
     `inventore fuga ab nam rerum aut consequatur repellat. Et qui quae at et ` +
     `aut officia cupiditate eveniet.` +
     `\n\n` +
     `Vitae tenetur iusto ad culpa quasi ut labore. Quis et sint nobis sunt ` +
     `soluta velit consectetur. Accusantium eligendi qui ut a dolor dolorum ` +
-    `alias architecto.` +
-    `\n\n` +
-    `Ex laborum non ab minima ut recusandae aliquam. Corrupti ipsa culpa ` +
-    `occaecati id praesentium et quis quae. Ipsam id fugiat necessitatibus ` +
-    `id eum in.` +
-    `\n\n` +
-    `Soluta minus et sit debitis est sint. A autem at id aut est et autem et ` +
-    `non. Sapiente odit tempora reiciendis sapiente iusto. Consequuntur est ` +
-    `nostrum fuga ut consequatur nostrum qui.`;
+    `alias architecto.`;
   
   const expected =
 `Magnam expedita est quam quas eos eveniet ad. Et tenetur fuga omnis occaecati
 vero voluptatibus ipsum amet minus. Et perferendis temporibus est consectetur
 quibusdam non quos perspiciatis. Voluptas natus recusandae et itaque voluptatem
 quis dolores itaque. Repellendus inventore fuga ab nam rerum aut consequatur
-repellat. Et qui quae at et aut officia cupiditate eveniet.
-
-Vitae tenetur iusto ad culpa quasi ut labore. Quis et sint nobis sunt soluta
-velit consectetur. Accusantium eligendi qui ut a dolor dolorum alias architecto.
-
-Ex laborum non ab minima ut recusandae aliquam. Corrupti ipsa culpa occaecati id
-praesentium et quis quae. Ipsam id fugiat necessitatibus id eum in.
-
-Soluta minus et sit debitis est sint. A autem at id aut est et autem et non.
-Sapiente odit tempora reiciendis sapiente iusto. Consequuntur est nostrum fuga
-ut consequatur nostrum qui.`;
+repellat. Et qui quae at et aut officia cupiditate eveniet. Vitae tenetur iusto
+ad culpa quasi ut labore. Quis et sint nobis sunt soluta velit consectetur.
+Accusantium eligendi qui ut a dolor dolorum alias architecto.`;
 
   const expectedLines = expected.split("\n");
     
@@ -71,7 +57,7 @@ ut consequatur nostrum qui.`;
       strings.push(str);
     }
     
-    // print.out(strings);
+    print.out(strings);
     
     expect(strings.join("\n")).toEqual(expected);
   });

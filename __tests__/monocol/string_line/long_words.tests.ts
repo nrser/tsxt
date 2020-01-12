@@ -7,9 +7,7 @@ import print from "print";
 import { loadYAML } from "../../test_helpers";
 import { runTestData } from "../monocol_test_helpers";
 
-import Lines from "../../../lib/monocol/lines";
 import StringLine from "../../../lib/monocol/string_line";
-import { N_0 } from "../../../lib/types";
 
 const longWords = loadYAML("monocol/test_data/long_words.yaml");
 

@@ -41,4 +41,44 @@ separate nodes will bite me in the ass at some point.
 What Could Go Wrong?
 ------------------------------------------------------------------------------
 
+A lot of things!
 
+### Whitespace
+
+The big shitty in all this is that Markdown (or any monospace format for
+terminal display) is *whitespace-sensitive*, and whitespace-sensitive syntax
+just *sucks* with string-interpolation templating languages because it's a huge
+pain to get indentation right with loops, includes, etc. Possible, but a massive
+pain.
+
+Recent examples are templating YAML in Helm. Ugh.
+
+So... what exactly would break/suck?
+
+1.  Markdown tables won't work with interpolated data, at least not while 
+    sticking to the docs being legit Markdown. Can't put HTML in tables, I'm
+    pretty damn sure.
+    
+    Which means they would need to written in HTML, but that's where we are 
+    right now with the TSX-based approach, so can't say we lost much?
+    
+
+### Parsing - Markdown to DOM to Markdown
+
+Now there would be source in Markdown that needs to get parsed into the 
+DOM structure, then have the interpolations run, then likely rendered *back*
+to Markdown for display, since Markdown in the terminal is almost certainly 
+going to be the most common target.
+
+This seems kinda dumb... but maybe not.
+
+The Markdown templating format is then really just a convenient way to author
+the DOM structure, which actually is exactly what it's some-what supposed to
+be. So it's really just an authoring alternative that can be layered in top,
+sine everything is going through the DOM representation either way.
+
+That's cool.
+
+It means that the Markdown *you* write is *not* the Markdown that gets rendered,
+but that's actually kinda nice too - what gets rendered is a standardized 
+version of it.

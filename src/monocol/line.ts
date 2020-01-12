@@ -18,26 +18,21 @@ type LineSource = string | StringIterable | StringIterator;
 
 export class Line implements IterableIterator<string> {
   
-  protected static readonly SPACE: " ";
+  public get isTotallyDone(): boolean { return this._isTotallyDone; }
   
   protected static readonly EOL_RESULT: IteratorReturnResult<void> =
     Object.freeze({ done: true, value: undefined });
+  
+  protected static readonly SPACE = " ";
   
   protected static readonly SPACE_RESULT: IteratorYieldResult<string> =
       Object.freeze({ done: false, value: Line.SPACE });
   
   protected _isTotallyDone: boolean = false;
-  protected yieldedColCount: N_0 = 0 as N_0;
-  protected paragraphSplitMode: boolean = false;
-  protected peekChar: string | undefined;
   
   protected iterator: Iterator<string>;
-  
-  /**
-   * Anything already read from the [[iterator]] but not yet yielded. Must be 
-   * yielded *before* anything new from the iterator.
-   */
-  protected yieldBuffer: string = "";
+  protected paragraphSplitMode: boolean = false;
+  protected peekChar: string | undefined;
   
   /**
    * Anything already read from the [[iterator]] but not yet processed. Must be
@@ -45,6 +40,13 @@ export class Line implements IterableIterator<string> {
    * processing anything new from the iterator.
    */
   protected processBuffer: string = "";
+  
+  /**
+   * Anything already read from the [[iterator]] but not yet yielded. Must be 
+   * yielded *before* anything new from the iterator.
+   */
+  protected yieldBuffer: string = "";
+  protected yieldedColCount: N_0 = 0 as N_0;
 
   constructor(
     protected readonly source: LineSource,
@@ -56,8 +58,6 @@ export class Line implements IterableIterator<string> {
       this.iterator = this.source[Symbol.iterator]();
     }
   }
-  
-  public get isTotallyDone(): boolean { return this._isTotallyDone; }
 
   public [Symbol.iterator](): this { return this; }
   

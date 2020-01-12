@@ -1,14 +1,12 @@
 
-// class LineIterator /* implements IterableIterator<string> */ {
+export interface Line extends IterableIterator<string> {
+  [Symbol.iterator](): this;
   
-  
-//   public next(): IteratorResult<string, void> {
-    
-//   }
-// }
+  next(): IteratorResult<string, void>;
+}
 
-// // class BlockIterator {
-// //   next(): LineIterator {
-    
-// //   }
-// // }
+export interface Block extends IterableIterator<Line> {
+  [Symbol.iterator](): this;
+  
+  next(): IteratorResult<Line, void>;
+}
