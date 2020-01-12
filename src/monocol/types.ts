@@ -2,6 +2,19 @@ import _ from "lodash/fp";
 
 import { isN_0 } from "../types";
 
+export interface Line extends IterableIterator<string> {
+  hasYieldedAllTokens: boolean;
+  
+  [Symbol.iterator](): this;
+  
+  next(): IteratorResult<string, void>;
+}
+
+export interface Block extends IterableIterator<Line> {
+  [Symbol.iterator](): this;
+  
+  next(): IteratorResult<Line, void>;
+}
 
 export type StringGenerator = Generator<string, void, any>;
 export type StringIterator = IterableIterator<string> | StringGenerator;
@@ -11,6 +24,8 @@ export type LineGenerator = Generator<StringGenerator, void, any>;
 export interface StringIterable {
   [Symbol.iterator](): StringIterator;
 }
+
+export type StringSource = string | StringIterable | StringIterator;
 
 export interface FixedLength {
   length: number;

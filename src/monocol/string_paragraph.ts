@@ -5,20 +5,19 @@ import print from "print";
 import { p } from "../helpers";
 import { N_0 } from "../types";
 
-import Line from "./line";
+import {
+  ELLIPSIS,
+  EOL_RESULT,
+  NEWLINE,
+  SPACE,
+} from "./constants";
+
+import { Line } from "./types";
 
 
-export class StringLine extends Line {
+export class StringParagraph implements Line {
   
-  public static readonly ELLIPSIS = "…";
-  public static readonly NEWLINE = "\n";
-  public static readonly SPACE = " ";
-  
-  public static makeTokenRegExp(): RegExp {
-    return /\s*(\S+)\s*/msy;
-  }
-  
-  protected _isSrcDone: boolean = false;
+  protected _hasYieldedAllTokens: boolean = false;
   protected readonly generator: Generator<string, void> = this.generate();
   protected readonly regExp: RegExp = /\s*(\S+)\s*/msy;
   
@@ -26,27 +25,30 @@ export class StringLine extends Line {
     protected readonly src: string,
     public readonly colWidth: N_0,
   ) {
-    super(src, colWidth);
   }
   
-  public get isTotallyDone(): boolean { return this._isSrcDone; }
+  public get hasYieldedAllTokens(): boolean {
+    return this._hasYieldedAllTokens;
+  }
+  
+  public [Symbol.iterator](): this { return this; }
   
   public next(): IteratorResult<string, void> {
     // Continuing to call [[next]] on a "totally done" [[Line]] just returns 
     // newlines, allowing iterating code to just keep going on lines for as long
     // as it needs without any special logic - it will just keep printing empty
     // lines, which is what it wants to be doing.
-    if (this._isSrcDone) { return Line.EOL_RESULT; }
+    if (this._hasYieldedAllTokens) { return EOL_RESULT; }
     
     const result = this.generator.next();
     
-    if (result.done) { return Line.EOL_RESULT; }
+    if (result.done) { return EOL_RESULT; }
     
     // [[generator]] yields `\n` to indicate a line break, but we want to
     // return that the line is done.
-    if (result.value === StringLine.NEWLINE) {
+    if (result.value === NEWLINE) {
       p(`Received "\\n", yielding EOL`, result);
-      return Line.EOL_RESULT;
+      return EOL_RESULT;
     }
     
     p(`Received content, yielding`, result.value);
@@ -60,7 +62,7 @@ export class StringLine extends Line {
   protected *generate(): Generator<string, void> {
     let budget: number = this.colWidth;
     
-    while (!this._isSrcDone) {
+    while (!this._hasYieldedAllTokens) {
       const match = this.regExp.exec(this.src);
       
       // Always want to match... if it failed, it means we have a case where 
@@ -80,34 +82,34 @@ export class StringLine extends Line {
       
       if (token.length < budget) {
         // We can fit it on the current line
-        if (budget !== this.colWidth) { yield StringLine.SPACE; }
+        if (budget !== this.colWidth) { yield SPACE; }
         yield token;
         budget -= (token.length + 1);
         
       } else if (token.length > this.colWidth) {
         // Token alone is longer than column width; needs to be truncated
-        if (budget !== this.colWidth) { yield StringLine.NEWLINE; }
-        yield token.slice(0, this.colWidth - StringLine.ELLIPSIS.length);
-        yield StringLine.ELLIPSIS;
+        if (budget !== this.colWidth) { yield NEWLINE; }
+        yield token.slice(0, this.colWidth - ELLIPSIS.length);
+        yield ELLIPSIS;
         // ...and we're out of width
         budget = 0;
         
       } else {
         // The token pushes us over the width limit, so yield a new line and 
         // then the token.
-        yield StringLine.NEWLINE;
+        yield NEWLINE;
         yield token;
         budget = this.colWidth - token.length;
       }
       
       if (this.regExp.lastIndex === this.src.length) {
-        p(`Setting _isSrcDone`);
-        this._isSrcDone = true;
+        p(`Setting _hasYieldedAllTokens`);
+        this._hasYieldedAllTokens = true;
       }
       
-    } // while !this._isSrcDone
+    } // while !this._hasYieldedAllTokens
   } // #*generate
   
 }
 
-export default StringLine;
+export default StringParagraph;

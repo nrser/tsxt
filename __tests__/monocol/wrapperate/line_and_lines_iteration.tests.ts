@@ -6,8 +6,8 @@ import print from "print";
 
 import { nth } from "../../test_helpers";
 
-import Line from "../../../lib/monocol/line";
-import { Lines } from "../../../lib/monocol/wrapperate";
+import { Paragraph } from "../../../lib/monocol/paragraph";
+import { StringParagraph } from "../../../lib/monocol/string_paragraph";
 import { N_0 } from "../../../lib/types";
 
 
@@ -39,10 +39,10 @@ Accusantium eligendi qui ut a dolor dolorum alias architecto.`;
 
   const expectedLines = expected.split("\n");
     
-  let lines: Lines;
+  let lines: Paragraph;
   
   beforeEach(() => {
-    lines = new Lines(text, 80 as N_0);
+    lines = new Paragraph(text, 80 as N_0);
   });
   
   
@@ -67,7 +67,7 @@ Accusantium eligendi qui ut a dolor dolorum alias architecto.`;
   
     it(`always yields the same Line`, () => {
       // 'cause it could be `undefined`, see comment below...
-      expect(lines.next().value).toBeInstanceOf(Line);
+      expect(lines.next().value).toBeInstanceOf(StringParagraph);
       expect(lines.next().value).toBe(lines.next().value);
     });
     
@@ -75,11 +75,11 @@ Accusantium eligendi qui ut a dolor dolorum alias architecto.`;
       const source = Faker.lorem.paragraphs(4, "\n\n");
       
       const nthFromLineN =
-        (ls: Lines, lineNumber: number, entryNumber: number): string =>
+        (ls: Paragraph, lineNumber: number, entryNumber: number): string =>
           nth(nth(ls, lineNumber), entryNumber);
       
-      const linesA = new Lines(source, 80);
-      const linesB = new Lines(source, 80);
+      const linesA = new Paragraph(source, 80);
+      const linesB = new Paragraph(source, 80);
       
       const lineA1String1 = nthFromLineN(linesA, 1, 1);
       expect(lineA1String1).toBeString();
@@ -112,7 +112,7 @@ Accusantium eligendi qui ut a dolor dolorum alias architecto.`;
         // 
         // Anyways, just check it's actually a [[Line]].
         // 
-        expect(nextLine).toBeInstanceOf(Line);
+        expect(nextLine).toBeInstanceOf(StringParagraph);
         
         // ...and they're all *identity-equal*
         expect(nextLine).toBe(firstLine);

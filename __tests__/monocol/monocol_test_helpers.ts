@@ -12,7 +12,7 @@ import {
 } from "../../lib/monocol/types";
 
 import { as, p } from "../../lib/helpers";
-import Lines from "../../lib/monocol/lines";
+import Paragraph from "../../lib/monocol/paragraph";
 import { IsFn, isN_0, N_0 } from "../../lib/types";
 
 interface TestCase {
@@ -99,12 +99,12 @@ export function w(n: number): FixedWidthIterable {
   return new FixedWidthIterable("*".repeat(n));
 }
 
-export function renderLines(lines: Lines): string {
+export function renderLines(paragraph: Paragraph): string {
   let str = "";
   
   let n = 1;
   
-  for (const line of lines) {
+  for (const line of paragraph) {
     let lineStr = "";
     for (const s of line) {
       lineStr += s;
@@ -121,7 +121,7 @@ export function renderLines(lines: Lines): string {
 
 export function runTestData(
   data: any,
-  block?: (lines: Lines) => void,
+  block?: (paragraph: Paragraph) => void,
 ): void {
   const testData = as(isTestData, data);
   // const values = testData.values;
@@ -132,11 +132,11 @@ export function runTestData(
         const colWidth =
           as(isN_0, testCase.colWidth || test.colWidth || testData.colWidth);
           
-        const lines = new Lines(testCase.source, colWidth);
+        const paragraph = new Paragraph(testCase.source, colWidth);
         
         it(testCase.desc, () => {
-          if (block) { block(lines); }
-          expect(renderLines(lines)).toEqual(testCase.expected);
+          if (block) { block(paragraph); }
+          expect(renderLines(paragraph)).toEqual(testCase.expected);
         });
       });
     });

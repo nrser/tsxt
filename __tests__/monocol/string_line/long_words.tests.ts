@@ -7,7 +7,7 @@ import print from "print";
 import { loadYAML } from "../../test_helpers";
 import { runTestData } from "../monocol_test_helpers";
 
-import StringLine from "../../../lib/monocol/string_line";
+import StringParagraph from "../../../lib/monocol/string_paragraph";
 
 const longWords = loadYAML("monocol/test_data/long_words.yaml");
 
@@ -17,7 +17,7 @@ describe(`[[StringLine]] class - long "words"`, () => {
       // Check we're using [[StringLine]] (private, hence telling TS to fuck
       // off)
       // @ts-ignore
-      expect(lines.line).toBeInstanceOf(StringLine);
+      expect(lines.line).toBeInstanceOf(StringParagraph);
     });
   }); // describe when a single "word" is longer than the column width
 }); // describe StringLine class
