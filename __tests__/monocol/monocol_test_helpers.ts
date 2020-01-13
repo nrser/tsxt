@@ -5,15 +5,19 @@ import _ from "lodash/fp";
 import print from "print";
 
 import {
+  Block,
   FixedLength,
   FixedWidth,
+  Line,
   StringIterable,
   StringIterator,
 } from "../../lib/monocol/types";
 
-import { as, p } from "../../lib/helpers";
+import { as, pFor } from "../../lib/helpers";
 import Paragraph from "../../lib/monocol/paragraph";
 import { IsFn, isN_0, N_0 } from "../../lib/types";
+
+// const p = pFor("Monocol Helpers");
 
 interface TestCase {
   colWidth?: N_0;
@@ -99,12 +103,14 @@ export function w(n: number): FixedWidthIterable {
   return new FixedWidthIterable("*".repeat(n));
 }
 
-export function renderLines(paragraph: Paragraph): string {
+export function renderBlock(block: Block): string {
+  const p = pFor("renderBlock");
+  
   let str = "";
   
   let n = 1;
   
-  for (const line of paragraph) {
+  for (const line of block) {
     let lineStr = "";
     for (const s of line) {
       lineStr += s;
@@ -115,6 +121,8 @@ export function renderLines(paragraph: Paragraph): string {
   }
   
   if (!str.endsWith("\n")) { str += "\n"; }
+  
+  p(`Render`, str);
   
   return str;
 }
@@ -136,7 +144,7 @@ export function runTestData(
         
         it(testCase.desc, () => {
           if (block) { block(paragraph); }
-          expect(renderLines(paragraph)).toEqual(testCase.expected);
+          expect(renderBlock(paragraph)).toEqual(testCase.expected);
         });
       });
     });

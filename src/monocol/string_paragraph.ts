@@ -2,10 +2,11 @@ import invariant from "invariant";
 import _ from "lodash/fp";
 import print from "print";
 
-import { p } from "../helpers";
+import { pFor } from "../helpers";
 import { N_0 } from "../types";
 
 import {
+  DONE_RESULT,
   ELLIPSIS,
   EOL_RESULT,
   NEWLINE,
@@ -14,6 +15,8 @@ import {
 
 import { Line } from "./types";
 
+
+const p = pFor("StringParagraph");
 
 export class StringParagraph implements Line {
   
@@ -38,11 +41,11 @@ export class StringParagraph implements Line {
     // newlines, allowing iterating code to just keep going on lines for as long
     // as it needs without any special logic - it will just keep printing empty
     // lines, which is what it wants to be doing.
-    if (this._hasYieldedAllTokens) { return EOL_RESULT; }
+    if (this._hasYieldedAllTokens) { return DONE_RESULT; }
     
     const result = this.generator.next();
     
-    if (result.done) { return EOL_RESULT; }
+    if (result.done) { return DONE_RESULT; }
     
     // [[generator]] yields `\n` to indicate a line break, but we want to
     // return that the line is done.

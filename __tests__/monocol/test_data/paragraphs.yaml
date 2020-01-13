@@ -1,0 +1,42 @@
+
+split:
+  wrap_at_74:
+    - |
+      Magnam expedita est quam quas eos eveniet ad. Et tenetur fuga omnis
+      occaecati vero voluptatibus ipsum amet minus. Et perferendis temporibus
+      est consectetur quibusdam non quos perspiciatis.
+    
+    - |
+      Voluptas natus recusandae et itaque voluptatem quis dolores itaque.
+      Repellendus inventore fuga ab nam rerum aut consequatur repellat. Et qui
+      quae at et aut officia cupiditate eveniet.
+    
+    - |
+      Vitae tenetur iusto ad culpa quasi ut labore. Quis et sint nobis sunt
+      soluta velit consectetur. Accusantium eligendi qui ut a dolor dolorum
+      alias architecto.
+
+text:
+  wrap_at_74: |
+      Magnam expedita est quam quas eos eveniet ad. Et tenetur fuga omnis
+      occaecati vero voluptatibus ipsum amet minus. Et perferendis temporibus
+      est consectetur quibusdam non quos perspiciatis.
+      
+      Voluptas natus recusandae et itaque voluptatem quis dolores itaque.
+      Repellendus inventore fuga ab nam rerum aut consequatur repellat. Et qui
+      quae at et aut officia cupiditate eveniet.
+
+      Vitae tenetur iusto ad culpa quasi ut labore. Quis et sint nobis sunt
+      soluta velit consectetur. Accusantium eligendi qui ut a dolor dolorum
+      alias architecto.
+  
+wrapped:
+  col_80: |
+    Magnam expedita est quam quas eos eveniet ad. Et tenetur fuga omnis occaecati
+    vero voluptatibus ipsum amet minus. Et perferendis temporibus est consectetur
+    quibusdam non quos perspiciatis. Voluptas natus recusandae et itaque voluptatem
+    quis dolores itaque. Repellendus inventore fuga ab nam rerum aut consequatur
+    repellat. Et qui quae at et aut officia cupiditate eveniet. Vitae tenetur iusto
+    ad culpa quasi ut labore. Quis et sint nobis sunt soluta velit consectetur.
+    Accusantium eligendi qui ut a dolor dolorum alias architecto.
+    

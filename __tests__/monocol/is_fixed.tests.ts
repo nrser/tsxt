@@ -5,9 +5,7 @@ import _ from "lodash/fp";
 import "../test_helpers";
 import { FixedWidthIterable } from "./monocol_test_helpers";
 
-import {
-  isFixedWidth,
-} from "../../lib/monocol";
+import { isFixedWidth } from "../../lib/monocol/types";
 
 
 describe(`isFixedWidth()`, () => {

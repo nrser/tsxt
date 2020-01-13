@@ -1,12 +1,14 @@
 import _ from "lodash/fp";
 import print from "print";
 
-import { as, p } from "../helpers";
+import { as, pFor } from "../helpers";
 import { isN_0, N_0 } from "../types";
 
+import { DONE_RESULT } from "./constants";
 import StringParagraph from "./string_paragraph";
 import { Block, Line, StringSource } from "./types";
 
+const p = pFor("Paragraph");
 
 export class Paragraph implements Block {
   
@@ -32,8 +34,8 @@ export class Paragraph implements Block {
     p(`Iterating Lines...`);
     
     if (this.line.hasYieldedAllTokens) {
-      p(`Has yielded all tokens?!`);
-      return { done: true, value: undefined };
+      p(`Has yielded all tokens!`);
+      return DONE_RESULT;
     }
     
     p(`Not totally done, yielding Line`);

@@ -13,6 +13,26 @@ export function p(msg: string, ...values: any[]): void {
   console.log(msg + (valuesStr ? "\n\n" + valuesStr + "\n\n" : ""));
 }
 
+export function pFor(name: string): typeof p {
+  return (msg: string, ...values: any[]): void => {
+    p(`[${name}] ${msg}`, ...values);
+  };
+}
+
+export function intersperse<T>(
+  insert: (index?: number) => T,
+  array: T[],
+): T[] {
+  const result: T[] = [];
+  
+  array.forEach((entry, index) => {
+    if (index > 0) { result.push(insert(index)); }
+    result.push(entry);
+  });
+  
+  return result;
+}
+
 export type TemplateLiteralTag<TExpression= any> =
   (strings: TemplateStringsArray, ...expressions: TExpression[] ) => string;
 
