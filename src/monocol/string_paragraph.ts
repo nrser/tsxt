@@ -20,7 +20,7 @@ const p = pFor("StringParagraph");
 
 export class StringParagraph implements Line {
   
-  protected _hasYieldedAllTokens: boolean = false;
+  protected _isDone: boolean = false;
   protected readonly generator: Generator<string, void> = this.generate();
   protected readonly regExp: RegExp = /\s*(\S+)\s*/msy;
   
@@ -30,8 +30,8 @@ export class StringParagraph implements Line {
   ) {
   }
   
-  public get hasYieldedAllTokens(): boolean {
-    return this._hasYieldedAllTokens;
+  public get isDone(): boolean {
+    return this._isDone;
   }
   
   public [Symbol.iterator](): this { return this; }
@@ -41,7 +41,7 @@ export class StringParagraph implements Line {
     // newlines, allowing iterating code to just keep going on lines for as long
     // as it needs without any special logic - it will just keep printing empty
     // lines, which is what it wants to be doing.
-    if (this._hasYieldedAllTokens) { return DONE_RESULT; }
+    if (this._isDone) { return DONE_RESULT; }
     
     const result = this.generator.next();
     
@@ -65,7 +65,7 @@ export class StringParagraph implements Line {
   protected *generate(): Generator<string, void> {
     let budget: number = this.colWidth;
     
-    while (!this._hasYieldedAllTokens) {
+    while (!this._isDone) {
       const match = this.regExp.exec(this.src);
       
       // Always want to match... if it failed, it means we have a case where 
@@ -106,11 +106,11 @@ export class StringParagraph implements Line {
       }
       
       if (this.regExp.lastIndex === this.src.length) {
-        p(`Setting _hasYieldedAllTokens`);
-        this._hasYieldedAllTokens = true;
+        p(`Setting _isDone`);
+        this._isDone = true;
       }
       
-    } // while !this._hasYieldedAllTokens
+    } // while !this._isDone
   } // #*generate
   
 }

@@ -8,7 +8,7 @@ const p = pFor("FillLine");
 
 export class FillLine implements Line {
   
-  protected _hasYieldedAllTokens: boolean = false;
+  protected _isDone: boolean = false;
   protected readonly generator: Generator<string, void> = this.generate();
   
   constructor(
@@ -18,15 +18,15 @@ export class FillLine implements Line {
   ) {
   }
   
-  public get hasYieldedAllTokens(): boolean {
-    return this._hasYieldedAllTokens;
+  public get isDone(): boolean {
+    return this._isDone;
   }
   
   public [Symbol.iterator](): this { return this; }
   
   public next(): IteratorResult<string, void> {
-    if (this._hasYieldedAllTokens) {
-      p(`Has yielded all tokens, returning DONE`);
+    if (this._isDone) {
+      p(`is done, returning DONE`);
       return DONE_RESULT;
     }
     
@@ -81,15 +81,15 @@ export class FillLine implements Line {
       // handing control back with the final `yield` so that the [[Fill]] can
       // tell we're done *before* yielding us 
       if (line === this.height) {
-        p(`Setting _hasYieldedAllTokens`);
-        this._hasYieldedAllTokens = true;
+        p(`Setting _isDone`);
+        this._isDone = true;
       }
       
       p(`Ending line ${line}`);
       yield NEWLINE;
     } // for line in height
     
-    // this._hasYieldedAllTokens = true;
+    // this._isDone = true;
   } // #*generate
 } // class FillLine
 

@@ -45,8 +45,8 @@ export class Fill implements Block {
       return EOL_RESULT;
     }
     
-    if (this.fillLine.hasYieldedAllTokens) {
-      p(`Has yielded all tokens!`);
+    if (this.fillLine.isDone) {
+      p(`Line is done!`);
       return EOL_RESULT;
     }
     

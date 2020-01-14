@@ -33,8 +33,8 @@ export class Paragraph implements Block {
   public next(): IteratorResult<Line, void> {
     p(`Iterating Lines...`);
     
-    if (this.line.hasYieldedAllTokens) {
-      p(`Has yielded all tokens!`);
+    if (this.line.isDone) {
+      p(`Line is done!`);
       return DONE_RESULT;
     }
     
