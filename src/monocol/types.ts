@@ -3,7 +3,7 @@ import _ from "lodash/fp";
 import { isN_0 } from "../types";
 
 export interface Line extends IterableIterator<string> {
-  isDone: boolean;
+  // isDone: boolean;
   
   [Symbol.iterator](): this;
   

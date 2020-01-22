@@ -13,17 +13,18 @@ const p = pFor("Paragraph");
 export class Paragraph implements Block {
   
   public readonly colWidth: N_0;
-  protected line: Line;
+  protected line: StringParagraph;
 
   constructor(
     protected readonly src: StringSource,
     colWidth: number,
   ) {
-    this.colWidth = as<N_0>(isN_0, colWidth);
+    this.colWidth = as(isN_0, colWidth);
     
     if (_.isString(src)) {
       this.line = new StringParagraph(src, as<N_0>(isN_0, colWidth));
     } else {
+      p(`Received non-string`, src);
       throw new Error(`TODO - handle iterable Paragraph sources`);
     }
   }
