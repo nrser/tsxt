@@ -17,7 +17,7 @@ describe(`iterate paragraph and line`, () => {
   let paragraph: Paragraph;
   
   beforeEach(() => {
-    paragraph = new Paragraph(paragraphData.text, 80 as N_0);
+    paragraph = new Paragraph(paragraphData.text.unwrapped, 80 as N_0);
   });
   
   it(`works when iterated depth-first`, () => {
@@ -56,11 +56,12 @@ describe(`iterate paragraph and line`, () => {
     //          this just loops a high amount of times...
     it(`yields that same Line indefinitely`, () => {
       // How many loops we gon do
-      const loops = 1000;
+      const loops = 10;
       
       // Which needs to be greater than the number of paragraph in the text for
       // it to be a valid test
-      expect(loops).toBeGreaterThan(paragraphData.text.split("\n").length);
+      expect(loops)
+        .toBeGreaterThan(paragraphData.text.unwrapped.split("\n").length);
       
       // To make sure they're all the same, just grab the first to compare
       const firstLine = paragraph.next().value;
